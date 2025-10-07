@@ -176,18 +176,23 @@
         const btn = document.getElementById('placeOrder'); if (btn) btn.disabled = true;
         (async () => {
           try {
-            const res = await fetch('../admin/api/order-create.php', {
+            const apiUrl = (location.origin ? location.origin : '') + '/admin/api/order-create.php';
+            const res = await fetch(apiUrl, {
               method: 'POST',
               headers: { 'Content-Type':'application/json' },
               credentials: 'same-origin',
-              body: JSON.stringify(order)
+              body: JSON.stringify({ ...order, secret: 'f3b1d8f74a0c9f2b3d1a7baf8c3a6e12c3f4e22e991a9d3b1b7f8e9a6c1d2f4e' })
             });
             if (res.ok) {
               const data = await res.json();
               if (data && data.ok) {
                 order.orderNumber = data.order_number || null;
                 order.orderId = data.order_id || null;
+              } else {
+                alert('Order saved locally, but not recorded in admin: ' + (data && data.error ? data.error : 'Unknown error'));
               }
+            } else {
+              alert('Order saved locally, but admin API responded with HTTP ' + res.status);
             }
           } catch (e) { /* fallback only */ }
           try{ sessionStorage.setItem('lastOrder', JSON.stringify(order)); }catch(e){}
