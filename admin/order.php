@@ -30,6 +30,8 @@ $stmt = $pdo->prepare('SELECT * FROM orders WHERE id = ?');
 $stmt->execute([$id]);
 $o = $stmt->fetch();
 if (!$o) { header('Location: orders.php'); exit; }
+// Currency symbol
+$sym = get_setting('currency_symbol', '$');
 ?>
 <!doctype html>
 <html>
@@ -63,6 +65,7 @@ if (!$o) { header('Location: orders.php'); exit; }
       <h1>Order <?=e($o['order_number'] ?: ('#'.$o['id']))?></h1>
       <div>
         <a class="btn" href="orders.php">Back to Orders</a>
+        <a class="btn" href="settings.php">Settings</a>
         <a class="btn" href="logout.php">Logout (<?=e($_SESSION['admin_name'] ?? '')?>)</a>
       </div>
     </header>
@@ -82,7 +85,7 @@ if (!$o) { header('Location: orders.php'); exit; }
           <tr><td class="k">City / ZIP</td><td class="v"><?=e($o['city'])?>, <?=e($o['zip'])?></td></tr>
           <tr><td class="k">SKU</td><td class="v"><?=e($o['sku'])?></td></tr>
           <tr><td class="k">Product</td><td class="v"><?=e($o['product_name'])?></td></tr>
-          <tr><td class="k">Total</td><td class="v">$<?=e(number_format((float)$o['price'],2))?></td></tr>
+          <tr><td class="k">Total</td><td class="v"><?=e($sym)?><?=e(number_format((float)$o['price'],2))?></td></tr>
           <tr><td class="k">Payment</td><td class="v"><?=e($o['payment_method'])?></td></tr>
           <tr><td class="k">IP</td><td class="v"><?=e($o['ip'])?></td></tr>
           <tr><td class="k">UA</td><td class="v" style="word-break:break-word;"><?=e($o['user_agent'])?></td></tr>

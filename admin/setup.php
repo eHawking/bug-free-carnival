@@ -46,6 +46,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 INDEX idx_created (created_at)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
+            // Settings KV table
+            $pdo->exec("CREATE TABLE IF NOT EXISTS settings (
+                k VARCHAR(64) NOT NULL PRIMARY KEY,
+                v TEXT NULL,
+                updated_at DATETIME NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+            // Seed default currency settings if not present
+            $now = date('Y-m-d H:i:s');
+            $pdo->prepare('INSERT IGNORE INTO settings (k, v, updated_at) VALUES (?,?,?)')
+                ->execute(['currency_code','USD',$now]);
+            $pdo->prepare('INSERT IGNORE INTO settings (k, v, updated_at) VALUES (?,?,?)')
+                ->execute(['currency_symbol','$',$now]);
+            $pdo->prepare('INSERT IGNORE INTO settings (k, v, updated_at) VALUES (?,?,?)')
+                ->execute(['currency_rate','1',$now]);
+
+            // Seed pricing (base USD totals and old strike-through totals)
+            $pdo->prepare('INSERT IGNORE INTO settings (k, v, updated_at) VALUES (?,?,?)')
+                ->execute(['price_total_usd_EPK06','294',$now]);
+            $pdo->prepare('INSERT IGNORE INTO settings (k, v, updated_at) VALUES (?,?,?)')
+                ->execute(['price_total_usd_EPK03','177',$now]);
+            $pdo->prepare('INSERT IGNORE INTO settings (k, v, updated_at) VALUES (?,?,?)')
+                ->execute(['price_total_usd_EPK02','138',$now]);
+
+            $pdo->prepare('INSERT IGNORE INTO settings (k, v, updated_at) VALUES (?,?,?)')
+                ->execute(['price_old_total_usd_EPK06','1074',$now]);
+            $pdo->prepare('INSERT IGNORE INTO settings (k, v, updated_at) VALUES (?,?,?)')
+                ->execute(['price_old_total_usd_EPK03','537',$now]);
+            $pdo->prepare('INSERT IGNORE INTO settings (k, v, updated_at) VALUES (?,?,?)')
+                ->execute(['price_old_total_usd_EPK02','358',$now]);
+
             // Seed admin user if provided and doesn't exist
             if ($adminUser !== '' && $adminPass !== '') {
                 $stmt = $pdo->prepare('SELECT id FROM admin_users WHERE username = ?');

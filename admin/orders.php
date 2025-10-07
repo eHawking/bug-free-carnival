@@ -3,6 +3,7 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/util.php';
 require_login();
 $pdo = db();
+$sym = get_setting('currency_symbol', '$');
 
 $statuses = order_statuses();
 $filter_status = $_GET['status'] ?? '';
@@ -74,6 +75,7 @@ $rows = $stmt->fetchAll();
       <h1>Orders</h1>
       <div>
         <a class="btn" href="dashboard.php">Dashboard</a>
+        <a class="btn" href="settings.php">Settings</a>
         <a class="btn" href="logout.php">Logout (<?=e($_SESSION['admin_name'] ?? '')?>)</a>
       </div>
     </header>
@@ -102,7 +104,7 @@ $rows = $stmt->fetchAll();
             <td><?=e($o['email'])?></td>
             <td><?=e($o['phone'])?></td>
             <td><?=e($o['sku'])?></td>
-            <td>$<?=e(number_format((float)$o['price'],2))?></td>
+            <td><?=e($sym)?><?=e(number_format((float)$o['price'],2))?></td>
             <td>
               <form method="post" style="display:flex; gap:6px; align-items:center">
                 <input type="hidden" name="csrf" value="<?=e(csrf_token())?>">

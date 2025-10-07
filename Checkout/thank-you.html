@@ -25,6 +25,7 @@
       <p class="muted">This is a local demo checkout. No payment was processed.</p>
       <div id="summary" class="kv" style="display:none">
         <div class="item"><strong>Order</strong>: <span id="orderno">—</span></div>
+        <div class="item"><strong>Currency</strong>: <span id="currency">—</span></div>
         <div class="item"><strong>SKU</strong>: <span id="sku">—</span></div>
         <div class="item"><strong>Product</strong>: <span id="product">—</span></div>
         <div class="item"><strong>Total</strong>: <span id="total">—</span></div>
@@ -44,9 +45,12 @@
         var o = JSON.parse(raw);
         document.getElementById('summary').style.display='flex';
         if (o.orderNumber){ document.getElementById('orderno').textContent = o.orderNumber; }
+        var code = (o.currency && o.currency.code) || 'USD';
+        var sym  = (o.currency && o.currency.symbol) || '$';
+        document.getElementById('currency').textContent = code;
         document.getElementById('sku').textContent = o.sku||'—';
         document.getElementById('product').textContent = (o.product&&o.product.name)||'—';
-        var fmt = function(n){ try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD'}).format(n) }catch(e){ return '$'+Number(n||0).toFixed(2);} };
+        var fmt = function(n){ try{ return sym + new Intl.NumberFormat(undefined,{minimumFractionDigits:2, maximumFractionDigits:2}).format(n) }catch(e){ return sym+Number(n||0).toFixed(2);} };
         document.getElementById('total').textContent = fmt(o.price);
         document.getElementById('name').textContent = o.name||'—';
         document.getElementById('email').textContent = o.email||'—';

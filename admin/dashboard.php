@@ -3,6 +3,8 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/util.php';
 require_login();
 $pdo = db();
+// Currency symbol
+$sym = get_setting('currency_symbol', '$');
 
 // Stats
 $counts = [];
@@ -47,6 +49,7 @@ $latest = $stmt->fetchAll();
     <header>
       <h1>HONR Admin • Dashboard</h1>
       <div>
+        <a class="btn" href="settings.php">Settings</a>
         <a class="btn" href="orders.php">Orders</a>
         <a class="btn" href="logout.php">Logout (<?=e($_SESSION['admin_name'] ?? '')?>)</a>
       </div>
@@ -69,7 +72,7 @@ $latest = $stmt->fetchAll();
             <td><?=e($o['created_at'])?></td>
             <td><?=e($o['name'])?></td>
             <td><?=e($o['sku'])?></td>
-            <td>$<?=e(number_format((float)$o['price'],2))?></td>
+            <td><?=e($sym)?><?=e(number_format((float)$o['price'],2))?></td>
             <td><span class="status"><?=e($o['status'])?></span></td>
             <td><a class="btn btn-primary" href="order.php?id=<?=e($o['id'])?>">View</a></td>
           </tr>

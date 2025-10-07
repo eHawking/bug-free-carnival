@@ -135,14 +135,17 @@
     <footer>© <span id="year"></span> Hammer of Night Rider</footer>
   </div>
 
+  <script src="../js/currency.js"></script>
   <script>
-    (function(){
+    (async function(){
       const $ = (s)=>document.querySelector(s);
-      const fmt = (n)=>{ try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD'}).format(+n||0) }catch(e){ return '$'+Number(n||0).toFixed(2);} };
+      await (window.__loadCurrency ? window.__loadCurrency() : Promise.resolve());
+      const CUR = window.__currency || { code:'USD', symbol:'$', rate:1 };
+      const fmt = (n)=>{ try{ return (CUR.symbol||'$') + new Intl.NumberFormat(undefined,{minimumFractionDigits:2, maximumFractionDigits:2}).format(+n||0) }catch(e){ return (CUR.symbol||'$')+Number(n||0).toFixed(2);} };
 
       const params = new URLSearchParams(location.search);
       const sku = (params.get('sku')||'').toUpperCase();
-      const price = parseFloat(params.get('price')||'0');
+      const basePrice = parseFloat(params.get('price')||'0');
       const productMap = {
         'EPK06': {name:'Best Value — 6 Bottles', img:'../images/img-PRODx6.png'},
         'EPK03': {name:'Most Popular — 3 Bottles', img:'../images/img-PRODx3.png'},
@@ -154,6 +157,7 @@
       $('#sumName').textContent = prod.name;
       $('#sumSku').textContent = sku || '—';
       $('#sumImage').src = prod.img;
+      const price = basePrice * (CUR.rate||1);
       $('#sumPrice').textContent = fmt(price);
       $('#subTotal').textContent = fmt(price);
       $('#grandTotal').textContent = fmt(price);
@@ -173,6 +177,9 @@
           notes: ($('#notes') && $('#notes').value) || '',
           createdAt: new Date().toISOString()
         };
+        // Attach currency context and preserve base USD
+        order.currency = { code: CUR.code, symbol: CUR.symbol, rate: CUR.rate };
+        order.basePriceUsd = basePrice;
         const btn = document.getElementById('placeOrder'); if (btn) btn.disabled = true;
         (async () => {
           try {
