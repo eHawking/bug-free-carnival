@@ -170,10 +170,29 @@
           contact:{ email: $('#email').value, phone: $('#phone').value },
           address:{ line1: $('#address').value, city: $('#city').value, zip: $('#zip').value },
           name: ($('#firstName').value||'')+' '+($('#lastName').value||''),
+          notes: ($('#notes') && $('#notes').value) || '',
           createdAt: new Date().toISOString()
         };
-        try{ sessionStorage.setItem('lastOrder', JSON.stringify(order)); }catch(e){}
-        location.href = 'thank-you.html';
+        const btn = document.getElementById('placeOrder'); if (btn) btn.disabled = true;
+        (async () => {
+          try {
+            const res = await fetch('../admin/api/order-create.php', {
+              method: 'POST',
+              headers: { 'Content-Type':'application/json' },
+              credentials: 'same-origin',
+              body: JSON.stringify(order)
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.ok) {
+                order.orderNumber = data.order_number || null;
+                order.orderId = data.order_id || null;
+              }
+            }
+          } catch (e) { /* fallback only */ }
+          try{ sessionStorage.setItem('lastOrder', JSON.stringify(order)); }catch(e){}
+          location.href = 'thank-you.html';
+        })();
       });
     })();
   </script>

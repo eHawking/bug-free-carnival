@@ -24,6 +24,7 @@
       <h1 class="font-third">Order received 🎉</h1>
       <p class="muted">This is a local demo checkout. No payment was processed.</p>
       <div id="summary" class="kv" style="display:none">
+        <div class="item"><strong>Order</strong>: <span id="orderno">—</span></div>
         <div class="item"><strong>SKU</strong>: <span id="sku">—</span></div>
         <div class="item"><strong>Product</strong>: <span id="product">—</span></div>
         <div class="item"><strong>Total</strong>: <span id="total">—</span></div>
@@ -42,6 +43,7 @@
         if(!raw){ return; }
         var o = JSON.parse(raw);
         document.getElementById('summary').style.display='flex';
+        if (o.orderNumber){ document.getElementById('orderno').textContent = o.orderNumber; }
         document.getElementById('sku').textContent = o.sku||'—';
         document.getElementById('product').textContent = (o.product&&o.product.name)||'—';
         var fmt = function(n){ try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD'}).format(n) }catch(e){ return '$'+Number(n||0).toFixed(2);} };
