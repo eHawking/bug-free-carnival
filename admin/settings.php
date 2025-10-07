@@ -14,46 +14,84 @@ $err = '';
 $code = get_setting('currency_code', 'USD');
 $symbol = get_setting('currency_symbol', '$');
 $rate = get_setting('currency_rate', '1');
+$rateNum = (float)$rate; if ($rateNum <= 0) $rateNum = 1.0;
 
 // Pricing settings (base USD)
 $skus = ['EPK06'=>6, 'EPK03'=>3, 'EPK02'=>2];
 $pricing = [];
 foreach ($skus as $sku=>$bottles){
+    $storedTotalUsd = get_setting('price_total_usd_'.$sku, '');
+    $storedOldUsd   = get_setting('price_old_total_usd_'.$sku, '');
+    $totalCur = ($storedTotalUsd !== '') ? ((float)$storedTotalUsd * $rateNum) : '';
+    $oldCur   = ($storedOldUsd   !== '') ? ((float)$storedOldUsd   * $rateNum) : '';
     $pricing[$sku] = [
-        'total' => get_setting('price_total_usd_'.$sku, ''),
-        'old'   => get_setting('price_old_total_usd_'.$sku, ''),
+        'total' => $totalCur,
+        'old'   => $oldCur,
         'bottles' => $bottles,
     ];
 }
 
+// Reload current settings so the page reflects latest saved values
+$code = get_setting('currency_code', $code);
+$symbol = get_setting('currency_symbol', $symbol);
+$rate = get_setting('currency_rate', $rate);
+$rateNum = (float)$rate; if ($rateNum <= 0) $rateNum = 1.0;
+$pricing = [];
+foreach ($skus as $sku=>$bottles){
+    $storedTotalUsd = get_setting('price_total_usd_'.$sku, '');
+    $storedOldUsd   = get_setting('price_old_total_usd_'.$sku, '');
+    $totalCur = ($storedTotalUsd !== '') ? ((float)$storedTotalUsd * $rateNum) : '';
+    $oldCur   = ($storedOldUsd   !== '') ? ((float)$storedOldUsd   * $rateNum) : '';
+    $pricing[$sku] = [
+        'total' => $totalCur,
+        'old'   => $oldCur,
+        'bottles' => $bottles,
+    ];
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!check_csrf($_POST['csrf'] ?? '')) {
         $err = 'Invalid CSRF token';
     } else {
-        $code = strtoupper(trim($_POST['currency_code'] ?? 'USD'));
-        $symbol = trim($_POST['currency_symbol'] ?? '');
-        $rate = trim($_POST['currency_rate'] ?? '1');
-        if (!isset($codes[$code])) { $err = 'Unsupported currency code'; }
-        if ($symbol === '') { $symbol = $codes[$code]['symbol']; }
-        if (!is_numeric($rate) || (float)$rate <= 0) { $err = 'Rate must be > 0'; }
-        // Pricing inputs
-        foreach ($skus as $sku=>$bottles){
-            $t = trim($_POST['price_total_usd_'.$sku] ?? '');
-            $o = trim($_POST['price_old_total_usd_'.$sku] ?? '');
-            if ($t !== '' && !is_numeric($t)) { $err = 'Totals must be numeric'; break; }
-            if ($o !== '' && !is_numeric($o)) { $err = 'Old totals must be numeric'; break; }
-        }
-        if (!$err) {
-            set_setting('currency_code', $code);
-            set_setting('currency_symbol', $symbol);
-            set_setting('currency_rate', (string)(float)$rate);
-            foreach ($skus as $sku=>$bottles){
-                $t = trim($_POST['price_total_usd_'.$sku] ?? '');
-                $o = trim($_POST['price_old_total_usd_'.$sku] ?? '');
-                if ($t !== '') set_setting('price_total_usd_'.$sku, (string)(float)$t);
-                if ($o !== '') set_setting('price_old_total_usd_'.$sku, (string)(float)$o);
+        $which = $_POST['form'] ?? '';
+        if ($which === 'currency') {
+            $code = strtoupper(trim($_POST['currency_code'] ?? 'USD'));
+            $symbol = trim($_POST['currency_symbol'] ?? '');
+            $rate = trim($_POST['currency_rate'] ?? '1');
+            if (!isset($codes[$code])) { $err = 'Unsupported currency code'; }
+            if ($symbol === '') { $symbol = $codes[$code]['symbol']; }
+            if (!is_numeric($rate) || (float)$rate <= 0) { $err = 'Rate must be > 0'; }
+            if (!$err) {
+                set_setting('currency_code', $code);
+                set_setting('currency_symbol', $symbol);
+                set_setting('currency_rate', (string)(float)$rate);
+                $msg = 'Currency saved';
             }
-            $msg = 'Settings saved';
+        } elseif ($which === 'pricing') {
+            // Read current currency and rate; values on this form are entered in selected currency
+            $code = get_setting('currency_code', 'USD');
+            $rateNum = (float)get_setting('currency_rate', '1');
+            if ($rateNum <= 0) $rateNum = 1.0;
+            foreach ($skus as $sku=>$bottles){
+                $t = trim($_POST['price_total_usd_'.$sku] ?? ''); // entered in current currency
+                $o = trim($_POST['price_old_total_usd_'.$sku] ?? '');
+                if ($t !== '' && !is_numeric($t)) { $err = 'Totals must be numeric'; break; }
+                if ($o !== '' && !is_numeric($o)) { $err = 'Old totals must be numeric'; break; }
+            }
+            if (!$err) {
+                foreach ($skus as $sku=>$bottles){
+                    $t = trim($_POST['price_total_usd_'.$sku] ?? '');
+                    $o = trim($_POST['price_old_total_usd_'.$sku] ?? '');
+                    if ($t !== '') {
+                        $usd = (float)$t / $rateNum; // convert back to USD for storage
+                        set_setting('price_total_usd_'.$sku, (string)$usd);
+                    }
+                    if ($o !== '') {
+                        $usdOld = (float)$o / $rateNum;
+                        set_setting('price_old_total_usd_'.$sku, (string)$usdOld);
+                    }
+                }
+                $msg = 'Pricing saved for currency '.e($code);
+            }
         }
     }
 }
@@ -96,6 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="card">
       <form method="post">
         <input type="hidden" name="csrf" value="<?=e(csrf_token())?>">
+        <input type="hidden" name="form" value="currency">
         <label>Currency</label>
         <select name="currency_code" onchange="var s=this.options[this.selectedIndex].dataset.symbol; if(s){ document.getElementById('currency_symbol').value=s }">
           <?php foreach ($codes as $k=>$meta): ?>
@@ -114,9 +153,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="card" style="margin-top:14px;">
-      <h3 style="margin:0 0 8px; font-size:16px;">Pricing (Base USD)</h3>
+      <h3 style="margin:0 0 8px; font-size:16px;">Pricing (entered in <?=e($code)?>)</h3>
+      <p style="margin:6px 0 12px; font-size:12px; color:#6b7280;">Tip: If you change currency/rate, click "Save" above first, then update pricing below. Values you enter here are in <?=e($code)?> and will be stored internally in USD.</p>
       <form method="post">
         <input type="hidden" name="csrf" value="<?=e(csrf_token())?>">
+        <input type="hidden" name="form" value="pricing">
         <table style="width:100%; border-collapse:collapse;">
           <thead>
             <tr>
