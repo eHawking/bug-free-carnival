@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout - Hammer of Night Rider</title>
+  <link rel="stylesheet" href="../css/theme-overrides.css" />
+  <style>
+    :root{ --border:#e5e7eb; --muted:#6b7280; }
+    body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; background: #f7f7f8; color:#111; }
+    .container{ max-width: 980px; margin: 24px auto; padding: 16px; }
+    .card{ background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.05); }
+    .row{ display:grid; grid-template-columns: 1.2fr .8fr; gap: 20px; }
+    header.brand{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border); }
+    header.brand .title{ font-weight:700; font-size:20px; }
+    header.brand .title span{ color: var(--brand-primary); }
+    .section{ padding:20px; }
+    h2{ font-size:18px; margin:0 0 12px; }
+    .muted{ color: var(--muted); }
+    .summary{ border:1px dashed var(--border); border-radius:10px; padding:14px; background:#fafafa; }
+    .summary .line{ display:flex; justify-content:space-between; margin:6px 0; font-size:14px; }
+    .total{ font-weight:700; font-size:18px; }
+    label{ display:block; font-size:13px; margin:10px 0 6px; color:#222; }
+    input, select, textarea{ width:100%; border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-size:14px; background:#fff; }
+    .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 16px; border-radius:10px; border:1px solid transparent; cursor:pointer; font-weight:700; }
+    .btn-primary{ background: var(--brand-primary); color: var(--brand-on-primary); border-color: var(--brand-primary); }
+    .btn-primary:hover{ background: var(--brand-primary-dark); border-color: var(--brand-primary-dark); }
+    .notice{ font-size:12px; color: var(--muted); margin-top:8px; }
+    footer{ text-align:center; font-size:12px; color:var(--muted); padding:16px; }
+    @media (max-width: 860px){ .row{ grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <header class="brand">
+        <div class="title">HAMMER OF <span>NIGHT RIDER</span> • Secure Checkout</div>
+        <img src="../images/img-cards.png" alt="Cards" height="24" />
+      </header>
+      <div class="section">
+        <div class="row">
+          <form id="checkoutForm" class="section" onsubmit="return false;">
+            <h2>Billing details</h2>
+            <div class="grid-2">
+              <div>
+                <label for="firstName">First name</label>
+                <input id="firstName" name="firstName" autocomplete="given-name" required />
+              </div>
+              <div>
+                <label for="lastName">Last name</label>
+                <input id="lastName" name="lastName" autocomplete="family-name" required />
+              </div>
+            </div>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
+            <label for="address">Address</label>
+            <input id="address" name="address" autocomplete="address-line1" />
+            <div class="grid-2">
+              <div>
+                <label for="city">City</label>
+                <input id="city" name="city" autocomplete="address-level2" />
+              </div>
+              <div>
+                <label for="zip">ZIP / Postal code</label>
+                <input id="zip" name="zip" autocomplete="postal-code" />
+              </div>
+            </div>
+            <div class="notice">This is a demo checkout with no external processors. Clicking Place Order will simulate success.</div>
+            <div style="margin-top:16px">
+              <button id="placeOrder" class="btn btn-primary" type="submit">Place Order</button>
+            </div>
+          </form>
+          <aside class="section">
+            <h2>Order summary</h2>
+            <div class="summary">
+              <div class="line"><span class="muted">Product</span><span id="sumName">—</span></div>
+              <div class="line"><span class="muted">SKU</span><span id="sumSku">—</span></div>
+              <div class="line"><span class="muted">Subtotal</span><span id="sumSubtotal">$0.00</span></div>
+              <div class="line"><span class="muted">Shipping</span><span id="sumShipping">FREE</span></div>
+              <hr style="border:none;border-top:1px solid var(--border);margin:10px 0" />
+              <div class="line total"><span>Total</span><span id="sumTotal">$0.00</span></div>
+            </div>
+            <p class="notice" style="margin-top:10px">Need help? Contact Support.</p>
+          </aside>
+        </div>
+      </div>
+    </div>
+    <footer>© <span id="year"></span> Hammer of Night Rider</footer>
+  </div>
+
+  <script>
+  (function(){
+    const $ = (sel)=>document.querySelector(sel);
+    const params = new URLSearchParams(location.search);
+    const sku = (params.get('sku')||'').toUpperCase();
+    const price = parseFloat(params.get('price')||'0');
+    const productMap = {
+      'EPK06': {name:'Best Value — 6 Bottles'},
+      'EPK03': {name:'Most Popular — 3 Bottles'},
+      'EPK02': {name:'Try Two — 2 Bottles'}
+    };
+    const prod = productMap[sku] || {name:'Selected Package'};
+
+    function fmt(n){ try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD'}).format(n) }catch(e){ return '$'+Number(n).toFixed(2);} }
+
+    $('#sumName').textContent = prod.name;
+    $('#sumSku').textContent = sku || '—';
+    $('#sumSubtotal').textContent = fmt(price);
+    $('#sumTotal').textContent = fmt(price);
+    $('#year').textContent = new Date().getFullYear();
+
+    $('#checkoutForm').addEventListener('submit', function(){
+      const order = {
+        sku, price,
+        name: ($('#firstName').value||'')+' '+($('#lastName').value||''),
+        email: $('#email').value||'',
+        address: {
+          line1: $('#address').value||'', city: $('#city').value||'', zip: $('#zip').value||''
+        },
+        product: prod, createdAt: new Date().toISOString()
+      };
+      try{ sessionStorage.setItem('lastOrder', JSON.stringify(order)); }catch(e){}
+      location.href = 'thank-you.html';
+    });
+  })();
+  </script>
+</body>
+</html>

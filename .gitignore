@@ -1,0 +1,27 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+*.log
+
+# Node/Build (if ever added)
+node_modules/
+dist/
+build/
+out/
+.next/
+.cache/
+
+# Backups and temp
+*.bak
+*.tmp
+~$*
+
+# Misc
+coverage/

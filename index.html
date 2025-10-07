@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Hammer of Night Rider</title>
+    <link rel="icon" type="image/png" sizes="1080x1080" href="favicons/img-favicon.png">
+    <link rel="stylesheet" href="css/css-bootstrap.min.css">
+    <link rel="stylesheet" href="css/fonts-fontawesome-all.min.css">
+    <link rel="stylesheet" href="css/fonts-simple-line-icons.min.css">
+    <link rel="stylesheet" href="css/css-styles.min.css">
+    <link rel="stylesheet" href="css/css-animate.min.min.css">
+    <link rel="stylesheet" href="https://use.typekit.net/wvs2hjr.css">
+    <link rel="stylesheet" href="css/theme-overrides.css">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1YWDVW6WH6"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-1YWDVW6WH6', {});
+
+	window.ga = window.ga || {};
+
+	ga.detectAffiliateId = function() {
+		const urlParams = new URLSearchParams(window.location.search);
+		const path = window.location.pathname;
+		if (path.startsWith('/b/')) {
+			return urlParams.get('aff_id') || null;
+		} else if (path.startsWith('/c/')) {
+			return urlParams.get('hop') || null;
+		}
+		return null;
+	}
+
+	ga.setupCustomEventParamsFromCookie = function() {
+		const cookie_to_ga = {
+			aid: 'affiliate_id',
+			domain: 'entry_domain',
+			ref: 'initial_referer',
+		};
+		Object.keys(cookie_to_ga).forEach(function(key) {
+			let fullKey = ga.uniqid + '_' + key;
+			let cookieValue = ga.getCookie(fullKey);
+			if (cookieValue) {
+				ga[cookie_to_ga[key]] = cookieValue;
+			}
+		});
+	}
+
+	ga.getCustomEventParams = function() {
+		const params = {
+			affiliate_id: ga.affiliate_id || null,
+			entry_domain: ga.entry_domain || null,
+			initial_referer: ga.initial_referer || null
+		};
+		// Remove keys with null values
+		Object.keys(params).forEach(key => {
+			if (params[key] === null) {
+				delete params[key];
+			}
+		});
+		return params;
+	}
+
+	ga.setCookie = function (name, value, days) {
+		var expires = "";
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+			expires = "; expires=" + date.toUTCString();
+		}
+		document.cookie = name + "=" + (value || "") + expires + "; path=/";
+	}
+
+	ga.getCookie = function (name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for (var i = 0; i < ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+			if (c.indexOf(nameEQ) == 0)
+				return c.substring(nameEQ.length, c.length);
+		}
+		return null;
+	}
+
+	ga.ViewItem = function ($itemSKU,$itemValue){
+		gtag("event", "view_item", {
+			currency: "USD",
+			value: $itemValue,
+			items: [
+				{
+					item_id: $itemSKU,
+					item_name: "Hammer of Night Rider (" + $itemSKU + ")",
+				}],
+			...ga.getCustomEventParams()
+		});
+		console.log("GA4 Track View Item", $itemSKU, $itemValue);
+	}
+
+	ga.BeginCheckout = function ($itemSKU,$itemValue){
+		gtag("event", "begin_checkout", {
+			currency: "USD",
+			value: $itemValue,
+			items: [
+				{
+					item_id: $itemSKU,
+					item_name: "Hammer of Night Rider (" + $itemSKU + ")",
+					quantity: 1,
+					price: $itemValue
+				}],
+			...ga.getCustomEventParams()
+		});
+		console.log("GA4 Track Begin Checkout", $itemSKU, $itemValue);
+	}
+
+	ga.Purchase = function ($order,$itemSKU,$itemValue,$url = false){
+
+		$url = $url || window.location.pathname + encodeURIComponent(window.location.search);
+
+		gtag("event", "purchase", {
+			currency: "USD",
+			transaction_id: $order,
+			value: $itemValue,
+			page_location: $url,
+			items: [
+				{
+					item_id: $itemSKU,
+					item_name: "Hammer of Night Rider (" + $itemSKU + ")",
+					quantity: 1,
+					price: $itemValue
+				}],
+			...ga.getCustomEventParams()
+		});
+
+		if(typeof customTracker === 'function'){
+			customTracker($order, $itemSKU, $itemValue);
+		}
+
+		console.log("GA4 Track Purchase", $order, $itemSKU, $itemValue);
+	}
+
+	ga.waitFor = function (variableName, callback) {
+		if (typeof ga[variableName] !== 'undefined' && ga[variableName] !== null) {
+			callback();
+		} else {
+			setTimeout(function() {
+				ga.waitFor(variableName, callback);
+			}, 100);
+		}
+	}
+
+	document.addEventListener("DOMContentLoaded", function () {
+				ga.uniqid = ga.getCookie('ga_uniqid');
+		// ga.uniqid = Math.floor(Math.random() * 100000) + Date.now().toString();
+		ga.url = window.location.pathname;
+		ga.query = encodeURIComponent(window.location.search || '');
+		// ga.setCookie('ga_uniqid', ga.uniqid, 3);
+		ga.affiliate_id = ga.detectAffiliateId();
+		ga.initial_referer = document.referrer;
+		ga.entry_domain = window.location.hostname;
+
+				ga.ViewItem("EPK02", 138);
+				ga.ViewItem("EPK06", 294);
+				ga.ViewItem("EPK03", 177);
+		
+		ga.buttons = document.getElementsByClassName('addToCart');
+		for(var i = 0; i < ga.buttons.length; i++) {
+			ga.buttons[i].addEventListener('click', (e)  => {
+				ga.BeginCheckout(e.target.dataset.sku, e.target.dataset.price);
+				ga.setCookie(ga.uniqid + '_sku', e.target.dataset.sku, 3);
+				ga.setCookie(ga.uniqid + '_price', e.target.dataset.price, 3);
+				ga.setCookie(ga.uniqid + '_type', "bank", 3);
+				ga.setCookie(ga.uniqid + '_url', ga.url, 3);
+				ga.setCookie(ga.uniqid + '_query', ga.query, 3);
+				ga.setCookie(ga.uniqid + '_aid', ga.affiliate_id, 3);
+				ga.setCookie(ga.uniqid + '_ref', ga.initial_referer, 3);
+				ga.setCookie(ga.uniqid + '_domain', ga.entry_domain, 3);
+				if(typeof window[e.target.dataset.callback] === 'function'){
+					window[e.target.dataset.callback](e);
+				}
+			}, false);
+		}
+		
+			});
+</script>    
+    <script>
+  var mysrc = "https://tracking.buygoods.com/track/?a=8288&firstcookie=0"
+    +"&tracking_redirect=&referrer="+encodeURIComponent(document.referrer)
+    +"&sessid2="+ReadCookie('sessid2')+"&product=EPK02,EPK06,EPK03&caller_url="+encodeURIComponent(window.location.href);
+  if(typeof add_to_cart !== 'undefined') {
+    mysrc = mysrc+'&add_to_cart='+add_to_cart;
+  }
+  var newScript = document.createElement('script');
+  newScript.type = 'text/javascript';
+  newScript.defer = true;
+  newScript.src = mysrc;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(newScript, s);
+  function ReadCookie(name){name += '='; var parts = document.cookie.split(/;\s*/);for (var i = 0; i < parts.length; i++) {var part = parts[i]; if (part.indexOf(name) == 0) return part.substring(name.length)} return '';}
+</script>
+
+  
+<script type="text/javascript">setTimeout(function () {var i = document.createElement("iframe");i.async = true;i.style="display:none";i.setAttribute("src", "https://buygoods.com/affiliates/go/conversion/iframe/bg?a=8288&t=dce1a2eeedf91258fcfb7cb451c40858&s="+ReadCookie('sessid2'));document.body.appendChild(i);}, 1000);</script></head>
+
+<body data-disable-user-interaction>
+    <main id="order-now-page" class="position-relative">
+                <div>
+            <div class="position-relative">
+                <section class="hero-fixed-bg-od pt-40 pattern-bg">
+                    <div class="container text-white z-2 position-relative">
+                        <div class="row">
+                            <div class="col-12 col-lg-8 mx-auto top-heading-box">
+                                <div id="CTA-to-scoll"></div>
+                                <h1 class="text-uppercase fw-bold text-white mb-lg-5 text-center font-third has-separator-center"><strong>Claim Your Discounted Hammer of Night Rider Below&nbsp;</strong><span class="text-primary fw-bold">WHILE STOCK LASTS</span></h1>
+                                                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-fixed-bg2 w-100 h-100 position-absolute start-0 top-0"></div>
+                </section>
+                <div class="vmask d-none d-md-block"></div>
+            </div>
+            <section class="negative-top-margin cfa-section">
+                <div class="container cfa-container">
+                    <div class="row">
+        <div class="col-12 col-md-4 text-center mb-3 order-md-first order-sm-last order-sm-last order-last zoom price-box-wrap">
+        <div class="bottleArea  cta-2-bttl">
+            <div class="bottleTitle bottle-top-highlight mb-0">
+                <h3 class="fw-semibold mb-0 color2 pb-0">Try Two</h3>
+                <h5 class="mt-0 h5-alt pt-0">60 Days, 2 Bottles</h5>
+                <div class="cta-vshape"></div>
+            </div>
+            <img class="img-fluid bottle-img cta-2b" src="images/img-PRODx2.png" loading="lazy">
+            <div class="priceTag">
+                <h1 class="fw-bold display-4 h1-alt d-inline-block price-ttl">$69</h1>
+                <h6 class="perBottle va-top d-inline-block">Per <br>Bottle</h6>
+            </div>
+            <div class="bottlePrice">
+                <div class="cta-mx-reset">
+                    <div class="discount">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto text-primary"><strong>YOU SAVE $220!</strong></span></div>
+                     
+                        <div class="discount empty d-none d-lg-block"></div>
+                        <div class="discount empty d-none d-lg-block"></div>    
+                                                                                                </div>
+                <a class="addToCart cta-btn btn" data-sku="EPK02" data-price="138" data-link-type="vsl-cta" data-link-index="2" data-callback="ctaEvents" href="Checkout/cod.html?sku=EPK02&amp;price=138">
+                    <svg class="shopping-cart-icon"><use href="#cart"></use></svg>
+                    Add to Cart
+                </a>
+                <img class="img-fluid mb-3 crads-img" src="images/img-cards.png" loading="lazy">
+                <h6 class="fw-bold fs-16">
+                    <span class="shipping">TOTAL:</span>
+                    <span class="oldPrice mx-1 color3">&nbsp;$358&nbsp;</span>
+                    <span class="newPrice mx-1">$138</span>
+                    <br>
+                                            <span class="shipping">+&nbsp;SHIPPING&nbsp;</span>
+                    
+                </h6>
+            </div>
+        </div>
+    </div>
+        <div class="col-12 col-md-4 text-center mb-3 order-md-1 order-sm-first order-first zoom price-box-wrap position-relative">
+        <div class="bottleArea featured cta-6-bttl">
+            <div class="bottleTitle bottle-top-highlight mb-0">
+                <h3 class="fw-semibold mb-0 color2 pb-0">Best Value</h3>
+                <h5 class="mt-0 h5-alt pt-0">180 Days, 6 Bottles</h5>
+                <div class="cta-vshape"></div>
+            </div>
+            <img class="img-fluid bottle-img cta-6b" src="images/img-PRODx6.png" loading="lazy">
+            <div class="priceTag">
+                <h1 class="fw-bold display-4 h1-alt d-inline-block price-ttl">$49</h1>
+                <h6 class="perBottle va-top d-inline-block">Per <br>Bottle</h6>
+            </div>
+            <div class="bottlePrice">
+                <div class="cta-mx-reset">
+                    <div class="discount">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto text-primary"><strong>YOU SAVE $780!</strong></span></div>
+                                            
+                    <div class="discount alt">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto lto-dark">2 FREE E-BOOKS!</span></div>
+                                            
+                    <div class="discount alt">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto lto-dark">BIGGEST DISCOUNT</span></div>
+                                              
+                    <div class="discount">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto lto-dark">60-DAYS GUARANTEE</span></div>
+                                    </div>
+                <a class="pulse animated infinite addToCart cta-btn btn" data-sku="EPK06" data-price="294" data-link-type="vsl-cta" data-link-index="6" data-callback="ctaEvents" href="Checkout/cod.html?sku=EPK06&amp;price=294">
+                    <svg class="shopping-cart-icon"><use href="#cart"></use></svg>
+                    Add to Cart
+                </a>
+                <img class="img-fluid mb-3 crads-img" src="images/img-cards.png" loading="lazy">
+                <h6 class="fw-bold fs-16">
+                    <span class="shipping">TOTAL:</span>
+                    <span class="oldPrice mx-1 color3">&nbsp;$1074&nbsp;</span>
+                    <span class="newPrice mx-1">$294</span>
+                    <br>
+                                            <span class="shipping">+&nbsp;<span class="text-danger">FREE</span> US SHIPPING&nbsp;</span>
+                    
+                </h6>
+            </div>
+        </div>
+    </div>
+        <div class="col-12 col-md-4 text-center mb-3 order-md-last zoom price-box-wrap">
+        <div class="bottleArea  cta-3-bttl">
+            <div class="bottleTitle bottle-top-highlight mb-0">
+                <h3 class="fw-semibold mb-0 color2 pb-0">Most Popular</h3>
+                <h5 class="mt-0 h5-alt pt-0">90 Days, 3 Bottles</h5>
+                <div class="cta-vshape"></div>
+            </div>
+            <img class="img-fluid bottle-img cta-3b" src="images/img-PRODx3.png" loading="lazy">
+            <div class="priceTag">
+                <h1 class="fw-bold display-4 h1-alt d-inline-block price-ttl">$59</h1>
+                <h6 class="perBottle va-top d-inline-block">Per <br>Bottle</h6>
+            </div>
+            <div class="bottlePrice">
+                <div class="cta-mx-reset">
+                    <div class="discount">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto text-primary"><strong>YOU SAVE $360!</strong></span></div>
+                                            
+                    <div class="discount alt">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto lto-dark">2 FREE E-BOOKS!</span></div>
+                                                                  
+                    <div class="discount">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto lto-dark">60-DAYS GUARANTEE</span></div>
+                                    </div>
+                <a class="addToCart cta-btn btn" data-sku="EPK03" data-price="177" data-link-type="vsl-cta" data-link-index="3" data-callback="ctaEvents" href="Checkout/cod.html?sku=EPK03&amp;price=177">
+                    <svg class="shopping-cart-icon"><use href="#cart"></use></svg>
+                    Add to Cart
+                </a>
+                <img class="img-fluid mb-3 crads-img" src="images/img-cards.png" loading="lazy">
+                <h6 class="fw-bold fs-16">
+                    <span class="shipping">TOTAL:</span>
+                    <span class="oldPrice mx-1 color3">&nbsp;$537&nbsp;</span>
+                    <span class="newPrice mx-1">$177</span>
+                    <br>
+                                            <span class="shipping">+&nbsp;<span class="text-danger">FREE</span> US SHIPPING&nbsp;</span>
+                    
+                </h6>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<div class="definitions d-none">
+    <div>
+        <svg version="2.0">
+            <defs>
+                <symbol id="tick" viewbox="0 0 512 512" width="100%" height="100%">
+                    <g fill="currentColor">        
+                        <path d="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM371.8 211.8C382.7 200.9 382.7 183.1 371.8 172.2C360.9 161.3 343.1 161.3 332.2 172.2L224 280.4L179.8 236.2C168.9 225.3 151.1 225.3 140.2 236.2C129.3 247.1 129.3 264.9 140.2 275.8L204.2 339.8C215.1 350.7 232.9 350.7 243.8 339.8L371.8 211.8z"></path>
+                    </g>
+                </symbol>
+                <symbol id="cart" viewbox="0 0 455.297 455.297" width="100%" height="100%">
+                    <g>
+                        <circle cx="65.993" cy="417.586" r="35"></circle>
+                        <path d="M30.993,322.586v30h182.879c-5.914-9.267-10.676-19.335-14.094-30H30.993z"></path>
+                        <path d="M323.059,183.727c-54.826,0-99.431,44.604-99.431,99.429s44.604,99.429,99.431,99.429
+                            c54.825,0,99.429-44.604,99.429-99.429S377.884,183.727,323.059,183.727z M384.559,298.157h-46.5v46.5h-30v-46.5h-46.5v-30h46.5
+                            v-46.5h30v46.5h46.5V298.157z"></path>
+                        <path d="M393.673,2.711l-12.294,75H0l25.888,158.454c2.833,17.282,19.479,31.422,36.992,31.422h131.688
+                            c7.715-64.052,62.392-113.859,128.49-113.859c26.887,0,51.884,8.244,72.6,22.333l23.496-143.349h36.142v-30H393.673z"></path>
+                        <path d="M323.059,412.586c-12.147,0-23.907-1.686-35.062-4.829c-0.912,3.118-1.404,6.416-1.404,9.829c0,19.33,15.67,35,35,35
+                            c19.33,0,35-15.67,35-35c0-3.145-0.421-6.19-1.2-9.089C345.054,411.166,334.219,412.586,323.059,412.586z"></path>
+                    </g>
+                </symbol>
+            </defs>
+        </svg>
+    </div>    
+</div>
+
+                    <div class="definitions d-none">
+                        <svg version="2.0">
+                            <defs>
+                                <symbol id="tick" viewbox="0 0 512 512" width="100%" height="100%">
+                                    <g fill="currentColor">
+                                        <path d="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM371.8 211.8C382.7 200.9 382.7 183.1 371.8 172.2C360.9 161.3 343.1 161.3 332.2 172.2L224 280.4L179.8 236.2C168.9 225.3 151.1 225.3 140.2 236.2C129.3 247.1 129.3 264.9 140.2 275.8L204.2 339.8C215.1 350.7 232.9 350.7 243.8 339.8L371.8 211.8z"></path>
+                                    </g>
+                                </symbol>
+                                <symbol id="cart" viewbox="0 0 455.297 455.297" width="100%" height="100%">
+                                    <g>
+                                        <circle cx="65.993" cy="417.586" r="35"></circle>
+                                        <path d="M30.993,322.586v30h182.879c-5.914-9.267-10.676-19.335-14.094-30H30.993z"></path>
+                                        <path d="M323.059,183.727c-54.826,0-99.431,44.604-99.431,99.429s44.604,99.429,99.431,99.429
+                                            c54.825,0,99.429-44.604,99.429-99.429S377.884,183.727,323.059,183.727z M384.559,298.157h-46.5v46.5h-30v-46.5h-46.5v-30h46.5
+                                            v-46.5h30v46.5h46.5V298.157z"></path>
+                                        <path d="M393.673,2.711l-12.294,75H0l25.888,158.454c2.833,17.282,19.479,31.422,36.992,31.422h131.688
+                                            c7.715-64.052,62.392-113.859,128.49-113.859c26.887,0,51.884,8.244,72.6,22.333l23.496-143.349h36.142v-30H393.673z"></path>
+                                        <path d="M323.059,412.586c-12.147,0-23.907-1.686-35.062-4.829c-0.912,3.118-1.404,6.416-1.404,9.829c0,19.33,15.67,35,35,35
+                                            c19.33,0,35-15.67,35-35c0-3.145-0.421-6.19-1.2-9.089C345.054,411.166,334.219,412.586,323.059,412.586z"></path>
+                                    </g>
+                                </symbol>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+            <section class="pt-40">
+                <div class="container text-center">
+                    <div class="row">
+                        <div class="col-12 mx-auto">
+                            <div class="d-flex badges-images mx-auto"><img class="img-fluid" data-bs-toggle="tooltip" data-bss-tooltip="" src="images/img-usa.png" title="Manufactured in the USA" loading="lazy"><img class="img-fluid" data-bs-toggle="tooltip" data-bss-tooltip="" src="images/img-fda.png" title="FDA Inspected" loading="lazy"><img class="img-fluid" data-bs-toggle="tooltip" data-bss-tooltip="" src="images/img-cgmp.png" title="Current Good Manufacturing Practice" loading="lazy"><img class="img-fluid" data-bs-toggle="tooltip" data-bss-tooltip="" src="images/img-gf.png" title="Gluten FREE" loading="lazy"><img class="img-fluid" data-bs-toggle="tooltip" data-bss-tooltip="" src="images/img-bpa.png" title="BPA FREE" loading="lazy"><img class="img-fluid" data-bs-toggle="tooltip" data-bss-tooltip="" src="images/img-ngmo.png" title="Non-GMO" loading="lazy"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="py-60">
+                <p class="text-center text-uppercase small-title">Hammer of Night Rider</p>
+                <h1 class="text-center fw-bold font-third has-separator-center"><span class="text-primary">THE #1 FORMULA</span>&nbsp;to Support Your&nbsp;<span class="text-primary">SEX LIFE GOALS</span></h1>
+                <h3 class="text-center fw-bold font-third">Always ready to go</h3>
+            </section>
+            <section class="section2-bg alt-bg position-relative z-2 py-100 bg-dark pattern-bg">
+                <div class="container shadow-box bg-light-2 py-60 ps-100 b-radius-8 border-box bg-white">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-12 col-md-9 col-lg-7">
+                                    <p class="fw-normal mb-4 position-relative color2 p-quote" style="font-style: italic;">When I first started working on the formula that was to become Hammer of Night Rider, I never would have imagined in a million years that I would one day help thousands of men from around the world fulfill their dreams of improving their lives via natural and long-lasting male enhancement.</p>
+                                    <p class="fw-normal mb-4 color2 p-quote" style="font-style: italic;">It&rsquo;s people like you that make all those years of research and testing worthwhile, and I hope you manage to get the most out of Hammer of Night Rider while I can still afford to produce it at these prices.</p>
+                                    <div><img class="float-start me-4 d-inline-block align-middle" src="images/img-sign.png" width="176" height="" loading="lazy">
+                                        <div class="d-inline-block align-middle">
+                                            <h3 class="mb-0 mt-0 pb-0 pt-0 font-third fw-bold">Qadeer Hussain</h3>
+                                            <h5 class="text-primary mb-0 mt-0 pb-0 pt-0 font-third"><span style="color: rgb(53, 53, 53);">Creator, Hammer of Night Rider</span></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-5 text-center pt-5 pt-md-0"><img class="img-fluid sg-bottle-360" src="images/img-mockup_bg.jpg" width="240" loading="lazy"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-white py-100">
+                <div class="container">
+                    <p class="fw-semibold text-center text-uppercase small-title">BONUSES</p>
+                    <h1 class="text-center mb-4 font-third fw-bold">HERE ON OUR WEBSITE, YOU CAN GET INSTANT ACCESS TO THE FOLLOWING <span class="text-primary">DIGITAL BONUSES</span></h1>
+                    <h3 class="text-center mb-4 font-third fw-bold has-separator-center">You Can <span class="text-primary">Read</span>&nbsp;Them Online Or <span class="text-primary">DOWNLOAD</span>&nbsp;Them To Your Computer, Phone Or Tablet</h3>
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <h3 class="mb-4 font-third fw-bold text-center text-md-start">POWERFUL ERECTIONS ON COMMAND</h3>
+                            <p class="pb-0 mb-4 pr-50 pt-lg-2">Get the <span>&ldquo;Natural Penis Enlargement Master&rdquo;</span>&nbsp;&amp; &ldquo;Become a Sex Genius&rdquo; Books for FREE After Ordering</p>
+                            <p class="pb-0 mb-5 mb-lg-0 pr-50 pt-lg-2">Say goodbye to painful penis pumps and dangerous meds. Armed with the knowledge in these books, you&rsquo;ll trigger your body&rsquo;s natural growth gene, while also learning the secret tantric techniques that&rsquo;ll instantly transform you into a sex master.</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4 text-center g-0 pb-3 pb-md-0" style="border-radius: 1rem;">
+                            <div class="bg-dark text-white p-5 w-100 shadow-box2 pattern-bg me-0 me-md-3"><img class="img-fluid mb-3 pdf-cover" src="images/img-cover1.jpg" loading="lazy">
+                                <p class="small mb-0 text-white">* This image represents a digital download.</p>
+                                <h4 class="color2 font-third text-white">&ldquo;Natural Penis Enlargement&rdquo; <br>(instant download)</h4><a class="get-it-url" href="https://drive.google.com/file/d/1BWPv5JPn9EuXH5afcdzb5sB-zSOWBupl/view" target="_blank">
+                                    <div class="text-center"><span>(Get It From Here!)</span></div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4 text-center g-0" style="border-radius: 1rem;">
+                            <div class="bg-dark text-white p-5 w-100 shadow-box2 pattern-bg ms-0 ms-md-3"><img class="img-fluid mb-3 pdf-cover" src="images/img-cover2.jpg" loading="lazy">
+                                <p class="small mb-0 text-white">* This image represents a digital download.</p>
+                                <h4 class="color2 font-third text-white">&ldquo;Become a Sex Genius&rdquo; <br>(instant download)</h4><a class="get-it-url" href="https://endopeak.com/assets/bonuses/Bonus2_7_Steps_To_Become_A_Sex_genius.pdf" target="_blank">
+                                    <div class="text-center"><span>(Get It From Here!)</span></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="pattern-bg-light">
+                <section class="testimonials pt-100 pb-1 pb-lg-5" style="background: none!important;">
+                    <div class="container">
+                        <div>
+                            <p class="fw-semibold text-center fw-bold small-title"><span style="color: rgb(51, 51, 51);">TESTIMONIALS</span></p>
+                            <h1 class="text-center mb-4 font-third fw-bold has-separator-center"><span style="color: rgb(51, 51, 51);">Real Hammer of Night Rider </span><span class="text-primary">Users</span><span style="color: rgb(51, 51, 51);">, Real Life&#8209;Changing&nbsp;</span><span class="text-primary">Results</span><span style="color: rgb(51, 51, 51);">&nbsp;</span></h1>
+                        </div>
+                        <div class="row row-bordered pb-4 pb-lg-3">
+                            <div class="col-md-2 col-lg-2"><img class="img-fluid d-block mx-auto testimonial-thumb" src="images/img-testi1.jpg" loading="lazy">
+                                <p class="fs-3 text-center font-third lh-reset">Mark B.</p>
+                                <h5 class="text-center font-primary mb-0 pb-0 font-third">New York, USA</h5>
+                            </div>
+                            <div class="col">
+                                <p class="quote position-relative"><i class="fas fa-quote-right quote-icon text-dark"></i><span class="p-quote text-center text-md-start">Before Hammer of Night Rider, I thought my top performance days were gone.<br>As a retired officer, staying fit was crucial. But age caught up and ED struck.<br>Thankfully, I found Hammer of Night Rider in the nick of time. Now, I feel like I'm back in my prime!<br>My partner and I enjoy a satisfying love life, just like in our younger years.</span></p>
+                                <div class="text-center text-md-start">
+                                    <p class="fs-5 fw-bold d-inline me-3 text-secondary font-third fw-bold"><span style="color: rgb(51, 51, 51);">Verified Purchase</span></p><img class="rating-stars" src="images/img-ratingStars.png" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-bordered pt-3 pb-4 pb-lg-3">
+                            <div class="col-md-2 col-lg-2"><img class="img-fluid testimonial-thumb d-block mx-auto" src="images/img-testi2.jpg" loading="lazy">
+                                <p class="fs-3 text-center font-third lh-reset">Thomas J.</p>
+                                <h5 class="font-primary mb-0 pb-0 text-center font-third">Arizona, <br>USA</h5>
+                            </div>
+                            <div class="col">
+                                <p class="position-relative p-quote"><i class="fas fa-quote-right quote-icon text-dark"></i><span class="p-quote text-center text-md-start">I work a demanding job in the financial sector, which means it can take me a while to unwind before I&rsquo;m able to perform in the sack.<br>But with Hammer of Night Rider that time is down to basically zero.<br>Since I started taking one capsule every day with my morning coffee, I&rsquo;ve never had a problem achieving full-fledged erections in seconds.<br>I can now keep up with my young wife in the bedroom.<br>Needless to say, this has made both of us VERY happy.</span></p>
+                                <div class="text-center text-md-start">
+                                    <p class="fs-5 fw-bold d-inline me-3 font-third fw-bold">Verified Purchase</p><img class="rating-stars" src="images/img-ratingStars.png" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-bordered pt-3 pb-4 pb-lg-3">
+                            <div class="col-md-2 col-lg-2"><img class="img-fluid testimonial-thumb d-block mx-auto" src="images/img-testi3.jpg" loading="lazy">
+                                <p class="fs-3 text-center font-third lh-reset">CHAD B.</p>
+                                <h5 class="font-primary mb-0 pb-0 text-center font-third">Texas,<br>&nbsp;USA</h5>
+                            </div>
+                            <div class="col">
+                                <p class="position-relative p-quote"><i class="fas fa-quote-right quote-icon text-dark"></i><span class="p-quote text-center text-md-start">I was always self-conscious about performance in bed. Fear held me back.<br>Then I found Hammer of Night Rider. It transformed EVERYTHING.<br>Improved stamina, reliable erections, otherworldly confidence - you name it.<br>Hammer of Night Rider changed my love life forever!</span></p>
+                                <div class="text-center text-md-start">
+                                    <p class="fs-5 fw-bold d-inline me-3 font-third fw-bold">Verified Purchase</p><img class="rating-stars" src="images/img-ratingStars.png" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-bordered pt-3 pb-4 pb-lg-3">
+                            <div class="col-md-2 col-lg-2"><img class="img-fluid testimonial-thumb d-block mx-auto" src="images/img-sarrah.jpg" loading="lazy">
+                                <p class="fs-3 text-center font-third lh-reset">Sarah L.</p>
+                                <h5 class="font-primary mb-0 pb-0 text-center font-third">California, USA </h5>
+                            </div>
+                            <div class="col">
+                                <p class="position-relative p-quote"><i class="fas fa-quote-right quote-icon text-dark"></i><span class="p-quote text-center text-md-start">Seeing my husband struggle with ED was heartbreaking.<br>It took years but we finally found a lifeline in Hammer of Night Rider.<br>It immediately improved his performance, revived our intimacy and strengthened our bond.<br>Our relationship has never been happier.<br>Thank you Hammer of Night Rider for bringing back our joy!</span></p>
+                                <div class="text-center text-md-start fw-bold">
+                                    <p class="fs-5 fw-bold d-inline fw-bold me-3 font-third">Verified Purchase</p><img class="rating-stars" src="images/img-ratingStars.png" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="small mb-40 text-center text-md-start">* Results may Vary</h4>
+                    </div>
+                </section>
+                <section class="testimonials pb-100 pt-0" style="background: none!important;">
+                    <div class="container">
+                        <div class="row pa-row-h">
+                            <div class="col-12 col-md-4">
+                                <div class="album-img" style="background-image: url(images/rev-1.jpg), url(images/img-pa3.jpg); background-size: cover, cover; background-position: center, center;"></div>
+                            </div>
+                            <div class="col-12 col-md-5">
+                                <div class="album-img" style="background-image: url(images/rev-2.jpg), url(images/img-pa.jpg); background-size: cover, cover; background-position: center, center;"></div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <div class="album-img small-img" style="background-image: url(images/rev-3.jpg), url(images/img-pa5.jpg); background-size: cover, cover; background-position: center, center;"></div>
+                                <div class="album-img small-img" style="background-image: url(images/rev-4.jpg), url(images/img-pa4.jpg); background-size: cover, cover; background-position: center, center;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <section class="py-100">
+                <div class="container text-center"><img class="img-fluid" src="images/img-diploma.jpg" loading="lazy"></div>
+            </section>
+            <section class="bg-dark pattern-bg text-white elements_bg py-100 fw-bold text-primary">
+                <div class="container z-2 position-relative">
+                    <h1 class="text-center text-white font-third fw-bold">Inside Every <span class="text-primary">HAMMER OF NIGHT RIDER</span>&nbsp;Capsule You&rsquo;ll Find:</h1>
+                    <h3 class="fw-normal text-center pb-3 mb-4 font-third fw-bold has-separator-center"><span class="text-primary">8 CAREFULLY-SELECTED INGREDIENTS</span>&nbsp;That Support Your Sex Life Goals</h3>
+                    <div class="row d-xl-flex justify-content-xl-center text-center g-lg-5">
+                        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 pb-3">
+                            <div><img class="img-fluid ingredients-thumb" src="images/img-hawthorn.jpg" loading="lazy"></div>
+                            <div class="text-center ingredients-name">
+                                <h5 class="mb-0 font-third fw-bold text-primary">Hawthorn Berry</h5>
+                            </div>
+                            <p class="lh-p mb-0 text-white">&nbsp;Promotes Circulation</p>
+                        </div>
+                        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 pb-3">
+                            <div><img class="img-fluid ingredients-thumb" src="images/img-gb.jpg" loading="lazy"></div>
+                            <div class="text-center ingredients-name">
+                                <h5 class="mb-0 font-third fw-bold text-primary">Tribulus</h5>
+                            </div>
+                            <p class="lh-p mb-0 text-white">Heightens Libido</p>
+                        </div>
+                        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 pb-3">
+                            <div><img class="img-fluid ingredients-thumb" src="images/img-mira.jpg" loading="lazy"></div>
+                            <div class="text-center ingredients-name">
+                                <h5 class="mb-0 font-third fw-bold text-primary">Chrysin</h5>
+                            </div>
+                            <p class="lh-p mb-0 text-white">Oxidative Stress Shield</p>
+                        </div>
+                        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 pb-3">
+                            <div><img class="img-fluid ingredients-thumb" src="images/img-catuaba.jpg" loading="lazy"></div>
+                            <div class="text-center ingredients-name">
+                                <h5 class="mb-0 font-third fw-bold text-primary">Epimedium</h5>
+                            </div>
+                            <p class="lh-p mb-0 text-white">&nbsp;Facilitates Blood Flow</p>
+                        </div>
+                        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 pb-3">
+                            <div><img class="img-fluid ingredients-thumb" src="images/img-i-ginseng-root.jpg" loading="lazy"></div>
+                            <div class="text-center ingredients-name">
+                                <h5 class="mb-0 font-third fw-bold text-primary">Saw Palmetto</h5>
+                            </div>
+                            <p class="lh-p mb-0 text-white">Testosterone <br>Production Aid</p>
+                        </div>
+                        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 pb-3">
+                            <div><img class="img-fluid ingredients-thumb" src="images/img-nicain.jpg" loading="lazy"></div>
+                            <div class="text-center ingredients-name">
+                                <h5 class="mb-0 font-third fw-bold text-primary">Tongkat Ali</h5>
+                            </div>
+                            <p class="lh-p mb-0 text-white">Improves <br>Sexual Performance</p>
+                        </div>
+                        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 pb-3">
+                            <div><img class="img-fluid ingredients-thumb" src="images/img-Epimedium.jpg" loading="lazy"></div>
+                            <div class="text-center ingredients-name">
+                                <h5 class="mb-0 font-third fw-bold text-primary">Winged Treebine</h5>
+                            </div>
+                            <p class="lh-p mb-0 text-white">Enhances <br>Natural Stamina</p>
+                        </div>
+                        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 pb-3">
+                            <div><img class="img-fluid ingredients-thumb" src="images/img-capsicum.jpg" loading="lazy"></div>
+                            <div class="text-center ingredients-name">
+                                <h5 class="mb-0 font-third fw-bold text-primary">Magnesium</h5>
+                            </div>
+                            <p class="lh-p mb-0 text-white">Supports <br>Testosterone Levels</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="blue-box mx-auto py-100 pattern-bg-light">
+                <div class="container">
+                    <p class="text-center fw-bold small-title text-black">Hammer of Night Rider Q&amp;A</p>
+                    <h1 class="text-center mb-4 font-third has-separator-center fw-bold">Frequently Asked Questions</h1>
+                    <div class="accordion" role="tablist" id="accordion-2">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" role="tab"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-2 .item-1" aria-expanded="true" aria-controls="accordion-2 .item-1">Is Hammer of Night Rider right for Me?</button></h2>
+                            <div class="accordion-collapse collapse show item-1" role="tabpanel" data-bs-parent="#accordion-2">
+                                <div class="accordion-body">
+                                    <p class="mb-0">Hammer of Night Rider has provided amazing sex life support for men in their 30s, 40, 50s and even 70s. Because it was engineered based on the teachings of modern science, Hammer of Night Rider formula is gentle yet powerful at the same time, using only pure plant ingredients and natural minerals. And you can rest assured knowing it's manufactured in the United States in a state-of-the-art FDA registered and GMP certified facility.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" role="tab"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-2 .item-2" aria-expanded="false" aria-controls="accordion-2 .item-2">What kind of results can I expect from Hammer of Night Rider?</button></h2>
+                            <div class="accordion-collapse collapse item-2" role="tabpanel" data-bs-parent="#accordion-2">
+                                <div class="accordion-body">
+                                    <p class="mb-0">Results with Hammer of Night Rider typically come in stages, depending on how long your course of treatment is. Usually, they take place something like this:<br>Stage 1. You'll feel much better overall, with increased energy, clearer thoughts and restful sleep - think back a decade or two ago - that's how you&rsquo;ll feel again.<br>Stage 2. You'll start getting firmer muscles and erections, more energy and stamina.<br>Stage 3. All your improvements solidify as long as you take Hammer of Night Rider for at least three months continuously. This happens when the inflammation that has plagued your reproductive system is completely eliminated, allowing you to experience fulfilling sex regardless of your age.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" role="tab"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-2 .item-3" aria-expanded="false" aria-controls="accordion-2 .item-3">How long will it take to see results?</button></h2>
+                            <div class="accordion-collapse collapse item-3" role="tabpanel" data-bs-parent="#accordion-2">
+                                <div class="accordion-body">
+                                    <p class="mb-0">We're all different and that's why the time it takes to see results varies. Most people start feeling a difference after the first week. In our tests, the best results come when you take Hammer of Night Rider consistently for 3 months (or longer) to allow time to cleanse, restore and renew. Therefore, we strongly recommend you take advantage of our 3 or 6 bottle discount package.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" role="tab"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-2 .item-4" aria-expanded="false" aria-controls="accordion-2 .item-4">What is the best way to take Hammer of Night Rider?</button></h2>
+                            <div class="accordion-collapse collapse item-4" role="tabpanel" data-bs-parent="#accordion-2">
+                                <div class="accordion-body">
+                                    <p class="mb-0">Simply take Hammer of Night Rider with a glass of water after the first meal of the day.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" role="tab"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-2 .item-5" aria-expanded="false" aria-controls="#accordion-2 .item-5">What if Hammer of Night Rider doesn&rsquo;t work for me?</button></h2>
+                            <div class="accordion-collapse collapse item-5" role="tabpanel" data-bs-parent="#accordion-2">
+                                <div class="accordion-body">
+                                    <p class="mb-0">I demand you are enthusiastic with your purchase, not just satisfied. And you won't know until you try it! So you can use Hammer of Night Rider for 60 days, with my "No Questions Asked 100% Money Back Guarantee". The only way to be totally convinced is to try this amazing formula and experience the results for yourself.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" role="tab"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-2 .item-6" aria-expanded="false" aria-controls="accordion-2 .item-6">Where can I buy Hammer of Night Rider and how quickly can I get it?</button></h2>
+                            <div class="accordion-collapse collapse item-6" role="tabpanel" data-bs-parent="#accordion-2">
+                                <div class="accordion-body">
+                                    <p class="mb-0">To make sure you are buying the original product and to ensure the purity of ingredients please buy from the official website only. We'll ship your order directly to your home or office using a premium carrier such as FedEx or UPS. We strive to ship every order within 24 working hours and to make things easy you will receive an email with your tracking number so that you can follow your package. On average, the package will arrive at your doorstep somewhere between 5 to 10 days for domestic orders.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" role="tab"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-2 .item-7" aria-expanded="false" aria-controls="accordion-2 .item-7">Is my purchase secure? How many times will you charge my card?</button></h2>
+                            <div class="accordion-collapse collapse item-7" role="tabpanel" data-bs-parent="#accordion-2">
+                                <div class="accordion-body">
+                                    <p class="mb-0">To purchase Hammer of Night Rider you are only asked for a one time payment right on this page. There are no other future payments needed to benefit from this product. This website is highly secure. We use industry-leading technology (such as SSLs) to keep your information safe and private.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="benefits" class="position-relative z-2 pt-100">
+                <div class="section-bg">
+                    <div class="container shadow-box2 bg-white big-paddings">
+                        <div class="row text-center mb-40">
+                            <div class="col-4">
+                                <div class="round-icon"><img class="img-fluid volume" src="images/img-clipboard-image-1.png" loading="lazy"></div>
+                                <h4 class="text-uppercase font-third text-primary fw-bold">Vitality &amp; <br>Energy</h4>
+                            </div>
+                            <div class="col-4">
+                                <div class="round-icon"><img class="img-fluid brain" src="images/img-clipboard-image.png" loading="lazy"></div>
+                                <h4 class="text-uppercase font-third text-primary fw-bold">Sex Life <br>Support</h4>
+                            </div>
+                            <div class="col-4">
+                                <div class="round-icon"><img class="img-fluid puzzle" src="images/img-clipboard-image-3.png" loading="lazy"></div>
+                                <h4 class="text-uppercase font-third text-primary fw-bold">Improved <br>Stamina</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-10 mx-auto">
+                                <p class="text-center mb-0 color3 font-secondary">Hammer of Night Rider's incredible formula brings together high quality raw ingredients sourced from different parts of the world that work in synergy for maximum performance. It's the only natural supplement on the market designed to enhance erection quality and duration, along with providing increased stamina and a heightened libido.</p>
+                            </div>
+                        </div>
+                        <div class="row d-xl-flex align-items-xl-center text-center margin-top-30">
+                            <div class="col-12 col-md-4 d-grid icons-box">
+                                <div class="icons-box-group"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 512 512" width="1em" height="1em" fill="currentColor" class="text-dark" style="font-size: 44px;">
+                                        <!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. -->
+                                        <path d="M512 165.4c0 127.9-70.05 235.3-175.3 270.1c-20.04 7.938-41.83 12.46-64.69 12.46c-64.9 0-125.2-36.51-155.7-94.47c-54.13 49.93-68.71 107-68.96 108.1C44.72 472.6 34.87 480 24.02 480c-1.844 0-3.727-.2187-5.602-.6562c-12.89-3.098-20.84-16.08-17.75-28.96c9.598-39.5 90.47-226.4 335.3-226.4C344.8 224 352 216.8 352 208S344.8 192 336 192C228.6 192 151 226.6 96.29 267.6c.1934-10.82 1.242-21.84 3.535-33.05c13.47-65.81 66.04-119 131.4-134.2c28.33-6.562 55.68-6.013 80.93-.0054c56 13.32 118.2-7.412 149.3-61.24c5.664-9.828 20.02-9.516 24.66 .8282C502.7 76.76 512 121.9 512 165.4z"></path>
+                                    </svg>
+                                    <p class="text-uppercase font-third text-primary fw-bold">NATURAL FORMULA</p>
+                                </div>
+                                <div class="icons-box-group"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 512 512" width="1em" height="1em" fill="currentColor" class="text-dark" style="font-size: 44px;">
+                                        <!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. -->
+                                        <path d="M288 512H224V248C224 217.1 198.9 192 168 192C137.1 192 112 217.1 112 248V260.1C141.3 270.9 160 295.5 160 331.1C160 359.1 124.2 410.5 80 448C35.83 410.5 0 360.4 0 331.1C0 295.5 18.67 270.9 48 260.1V248C48 181.7 101.7 128 168 128C188.2 128 207.3 133 224 141.8V120C224 53.73 277.7 0 344 0C410.3 0 464 53.73 464 120V132.1C493.3 142.9 512 167.5 512 203.1C512 231.1 476.2 282.5 432 320C387.8 282.5 352 232.4 352 203.1C352 167.5 370.7 142.9 400 132.1V120C400 89.07 374.9 64 344 64C313.1 64 288 89.07 288 120V512z"></path>
+                                    </svg>
+                                    <p class="text-uppercase font-third text-primary fw-bold">PLANT INGREDIENTS</p>
+                                </div>
+                                <div class="icons-box-group"><i class="fas fa-flask text-dark" style="font-size: 44px;"></i>
+                                    <p class="text-uppercase font-third text-primary fw-bold">NON-GMO</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 d-md-flex d-xxl-flex align-items-md-center align-items-xxl-center text-center position-relative icons-box"><img class="img-fluid mb-5 mb-lg-0 sg-bottle-360" src="images/img-bottle-special.jpg" loading="lazy"></div>
+                            <div class="col-12 col-md-4 d-grid icons-box">
+                                <div class="icons-box-group"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 512 512" width="1em" height="1em" fill="currentColor" class="text-dark" style="font-size: 44px;">
+                                        <!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. -->
+                                        <path d="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM164.1 325.5C158.3 318.8 148.2 318.1 141.5 323.9C134.8 329.7 134.1 339.8 139.9 346.5C162.1 372.1 200.9 400 255.1 400C311.1 400 349.8 372.1 372.1 346.5C377.9 339.8 377.2 329.7 370.5 323.9C363.8 318.1 353.7 318.8 347.9 325.5C329.9 346.2 299.4 368 255.1 368C212.6 368 182 346.2 164.1 325.5H164.1zM176.4 176C158.7 176 144.4 190.3 144.4 208C144.4 225.7 158.7 240 176.4 240C194 240 208.4 225.7 208.4 208C208.4 190.3 194 176 176.4 176zM336.4 240C354 240 368.4 225.7 368.4 208C368.4 190.3 354 176 336.4 176C318.7 176 304.4 190.3 304.4 208C304.4 225.7 318.7 240 336.4 240z"></path>
+                                    </svg>
+                                    <p class="text-uppercase font-third text-primary fw-bold">EASY TO Swallow</p>
+                                </div>
+                                <div class="icons-box-group"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 512 512" width="1em" height="1em" fill="currentColor" class="text-dark" style="font-size: 44px;">
+                                        <!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. -->
+                                        <path d="M0 64C0 46.33 14.33 32 32 32H224C241.7 32 256 46.33 256 64C256 81.67 241.7 96 224 96V266.8C203.8 295.4 192 330.3 192 368C192 393.2 197.3 417.1 206.8 438.8C189.5 463.7 160.6 480 128 480C74.98 480 32 437 32 384V96C14.33 96 0 81.67 0 64V64zM96 192H160V96H96V192zM512 368C512 447.5 447.5 512 368 512C288.5 512 224 447.5 224 368C224 288.5 288.5 224 368 224C447.5 224 512 288.5 512 368zM412.7 324.7L352 385.4L323.3 356.7C317.1 350.4 306.9 350.4 300.7 356.7C294.4 362.9 294.4 373.1 300.7 379.3L340.7 419.3C346.9 425.6 357.1 425.6 363.3 419.3L435.3 347.3C441.6 341.1 441.6 330.9 435.3 324.7C429.1 318.4 418.9 318.4 412.7 324.7H412.7z"></path>
+                                    </svg>
+                                    <p class="text-uppercase font-third text-primary fw-bold">No Stimulants</p>
+                                </div>
+                                <div class="icons-box-group"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 -64 640 640" width="1em" height="1em" fill="currentColor" class="text-dark" style="font-size: 44px;">
+                                        <!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. -->
+                                        <path d="M480 96H576C611.3 96 640 124.7 640 160V352C640 387.3 611.3 416 576 416H480V96zM448 416H192V96H448V416zM272 184C258.7 184 248 194.7 248 208C248 221.3 258.7 232 272 232C285.3 232 296 221.3 296 208C296 194.7 285.3 184 272 184zM368 232C381.3 232 392 221.3 392 208C392 194.7 381.3 184 368 184C354.7 184 344 194.7 344 208C344 221.3 354.7 232 368 232zM272 280C258.7 280 248 290.7 248 304C248 317.3 258.7 328 272 328C285.3 328 296 317.3 296 304C296 290.7 285.3 280 272 280zM368 328C381.3 328 392 317.3 392 304C392 290.7 381.3 280 368 280C354.7 280 344 290.7 344 304C344 317.3 354.7 328 368 328zM64 96H160V416H64C28.65 416 0 387.3 0 352V160C0 124.7 28.65 96 64 96z"></path>
+                                    </svg>
+                                    <p class="text-uppercase font-third text-primary fw-bold">NON-HABIT FORMING</p>
+                                </div>
+                            </div>
+                            <div class="col-12"><a class="btn btn-primary mx-auto buy-yellow-btn yellow-small" role="button" href="#CTA-to-scoll">Order Now</a></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="bottom-merged"></section>
+            <section class="bg-dark text-white py-100">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-7">
+                            <h1 class="text-white font-third has-separator fw-bold">FEEL GREAT,<br><span class="text-primary">Have INCREDIBLE SEX</span></h1>
+                            <p class="text-uppercase font-third fw-bold">100% Natural Male Enhancement Formulated to FACILITATE MONSTER ERECTIONS AT WILL AND INCREASED SEXUAL STAMINA FOR MAXIMUM PLEASURE!</p>
+                            <p class="mb-3 font-primary text-start"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewbox="0 0 16 16" class="bi bi-check2-circle fs-2 text-primary me-2">
+                                    <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"></path>
+                                    <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"></path>
+                                </svg>Reliable monster erections with more explosive orgasms!*</p>
+                            <p class="fw-normal mb-3 font-primary text-start"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewbox="0 0 16 16" class="bi bi-check2-circle fs-2 text-primary me-2">
+                                    <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"></path>
+                                    <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"></path>
+                                </svg>Increased stamina for longer-lasting sexual encounters!*</p>
+                            <p class="fw-normal font-primary text-start"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewbox="0 0 16 16" class="bi bi-check2-circle fs-2 text-primary me-2">
+                                    <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"></path>
+                                    <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"></path>
+                                </svg>Faster, more intense arousal with a bigger appetite for sex!*</p>
+                            <p class="small mb-0 text-start"><span style="color: rgb(120, 120, 120);">*&nbsp;</span>Individual results may vary. Consult usage instructions for best effects.</p>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-5 pt-5 pt-lg-0 text-center"><img class="img-fluid" src="images/img-figure.jpg" loading="lazy"></div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-white py-30">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-10 col-xl-7 text-end mx-auto">
+                            <div class="buy-car"><img class="car" src="images/img-car-black.png" loading="lazy">
+                                <div class="car-text">
+                                    <h3 class="fw-normal mb-0 text-start font-third text-black fw-bold">Every 6 Bottles Order Gets FREE Shipping Too!</h3>
+                                    <p class="mb-0 text-start text-black small">*96% Of Customers Order 6 Bottles (Our Recommended Option)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-dark secondary-cta pt-40 pattern-bg">
+                <div class="container">
+                    <h1 class="text-center fw-bold text-white pb-3 mb-0 font-third has-separator-center">TAKE ADVANTAGE OF THIS LIMITED OFFER TO STOCK UP ON HAMMER OF NIGHT RIDER <span class="text-primary">WHILE SUPPLIES LAST!</span></h1>
+                                    </div>
+            </section>
+            <div class="py-30 bg-dark secondary-cta pattern-bg" style="clip-path: polygon(100% 0, 0 0, 50% 100%);max-width: 792px;margin: -1px auto 0;"></div>
+            <section class="negative-top-margin cfa-section">
+                <div class="container cfa-container">
+                    <div class="row">
+        <div class="col-12 col-md-4 text-center mb-3 order-md-first order-sm-last order-sm-last order-last zoom price-box-wrap">
+        <div class="bottleArea  cta-2-bttl">
+            <div class="bottleTitle bottle-top-highlight mb-0">
+                <h3 class="fw-semibold mb-0 color2 pb-0">Try Two</h3>
+                <h5 class="mt-0 h5-alt pt-0">60 Days, 2 Bottles</h5>
+                <div class="cta-vshape"></div>
+            </div>
+            <img class="img-fluid bottle-img cta-2b" src="images/img-PRODx2.png" loading="lazy">
+            <div class="priceTag">
+                <h1 class="fw-bold display-4 h1-alt d-inline-block price-ttl">$69</h1>
+                <h6 class="perBottle va-top d-inline-block">Per <br>Bottle</h6>
+            </div>
+            <div class="bottlePrice">
+                <div class="cta-mx-reset">
+                    <div class="discount">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto text-primary"><strong>YOU SAVE $220!</strong></span></div>
+                     
+                        <div class="discount empty d-none d-lg-block"></div>
+                        <div class="discount empty d-none d-lg-block"></div>    
+                                                                                                </div>
+                <a class="addToCart cta-btn btn" data-sku="EPK02" data-price="138" data-link-type="vsl-cta" data-link-index="2" data-callback="ctaEvents" href="Checkout/local.html?sku=EPK02&amp;price=138">
+                    <svg class="shopping-cart-icon"><use href="#cart"></use></svg>
+                    Add to Cart
+                </a>
+                <img class="img-fluid mb-3 crads-img" src="images/img-cards.png" loading="lazy">
+                <h6 class="fw-bold fs-16">
+                    <span class="shipping">TOTAL:</span>
+                    <span class="oldPrice mx-1 color3">&nbsp;$358&nbsp;</span>
+                    <span class="newPrice mx-1">$138</span>
+                    <br>
+                                            <span class="shipping">+&nbsp;SHIPPING&nbsp;</span>
+                    
+                </h6>
+            </div>
+        </div>
+    </div>
+        <div class="col-12 col-md-4 text-center mb-3 order-md-1 order-sm-first order-first zoom price-box-wrap position-relative">
+        <div class="bottleArea featured cta-6-bttl">
+            <div class="bottleTitle bottle-top-highlight mb-0">
+                <h3 class="fw-semibold mb-0 color2 pb-0">Best Value</h3>
+                <h5 class="mt-0 h5-alt pt-0">180 Days, 6 Bottles</h5>
+                <div class="cta-vshape"></div>
+            </div>
+            <img class="img-fluid bottle-img cta-6b" src="images/img-PRODx6.png" loading="lazy">
+            <div class="priceTag">
+                <h1 class="fw-bold display-4 h1-alt d-inline-block price-ttl">$49</h1>
+                <h6 class="perBottle va-top d-inline-block">Per <br>Bottle</h6>
+            </div>
+            <div class="bottlePrice">
+                <div class="cta-mx-reset">
+                    <div class="discount">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto text-primary"><strong>YOU SAVE $780!</strong></span></div>
+                                            
+                    <div class="discount alt">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto lto-dark">2 FREE E-BOOKS!</span></div>
+                                            
+                    <div class="discount alt">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto lto-dark">BIGGEST DISCOUNT</span></div>
+                                              
+                    <div class="discount">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto lto-dark">60-DAYS GUARANTEE</span></div>
+                                    </div>
+                <a class="pulse animated infinite addToCart cta-btn btn" data-sku="EPK06" data-price="294" data-link-type="vsl-cta" data-link-index="6" data-callback="ctaEvents" href="Checkout/local.html?sku=EPK06&amp;price=294">
+                    <svg class="shopping-cart-icon"><use href="#cart"></use></svg>
+                    Add to Cart
+                </a>
+                <img class="img-fluid mb-3 crads-img" src="images/img-cards.png" loading="lazy">
+                <h6 class="fw-bold fs-16">
+                    <span class="shipping">TOTAL:</span>
+                    <span class="oldPrice mx-1 color3">&nbsp;$1074&nbsp;</span>
+                    <span class="newPrice mx-1">$294</span>
+                    <br>
+                                            <span class="shipping">+&nbsp;<span class="text-danger">FREE</span> US SHIPPING&nbsp;</span>
+                    
+                </h6>
+            </div>
+        </div>
+    </div>
+        <div class="col-12 col-md-4 text-center mb-3 order-md-last zoom price-box-wrap">
+        <div class="bottleArea  cta-3-bttl">
+            <div class="bottleTitle bottle-top-highlight mb-0">
+                <h3 class="fw-semibold mb-0 color2 pb-0">Most Popular</h3>
+                <h5 class="mt-0 h5-alt pt-0">90 Days, 3 Bottles</h5>
+                <div class="cta-vshape"></div>
+            </div>
+            <img class="img-fluid bottle-img cta-3b" src="images/img-PRODx3.png" loading="lazy">
+            <div class="priceTag">
+                <h1 class="fw-bold display-4 h1-alt d-inline-block price-ttl">$59</h1>
+                <h6 class="perBottle va-top d-inline-block">Per <br>Bottle</h6>
+            </div>
+            <div class="bottlePrice">
+                <div class="cta-mx-reset">
+                    <div class="discount">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto text-primary"><strong>YOU SAVE $360!</strong></span></div>
+                                            
+                    <div class="discount alt">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto lto-dark">2 FREE E-BOOKS!</span></div>
+                                                                  
+                    <div class="discount">
+                        <svg width="1em" height="1em" class="me-2 fs-24" style="font-size: 23px;"><use href="#tick"></use></svg>
+                        <span class="lto lto-dark">60-DAYS GUARANTEE</span></div>
+                                    </div>
+                <a class="addToCart cta-btn btn" data-sku="EPK03" data-price="177" data-link-type="vsl-cta" data-link-index="3" data-callback="ctaEvents" href="Checkout/local.html?sku=EPK03&amp;price=177">
+                    <svg class="shopping-cart-icon"><use href="#cart"></use></svg>
+                    Add to Cart
+                </a>
+                <img class="img-fluid mb-3 crads-img" src="images/img-cards.png" loading="lazy">
+                <h6 class="fw-bold fs-16">
+                    <span class="shipping">TOTAL:</span>
+                    <span class="oldPrice mx-1 color3">&nbsp;$537&nbsp;</span>
+                    <span class="newPrice mx-1">$177</span>
+                    <br>
+                                            <span class="shipping">+&nbsp;<span class="text-danger">FREE</span> US SHIPPING&nbsp;</span>
+                    
+                </h6>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<div class="definitions d-none">
+    <div>
+        <svg version="2.0">
+            <defs>
+                <symbol id="tick" viewbox="0 0 512 512" width="100%" height="100%">
+                    <g fill="currentColor">        
+                        <path d="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM371.8 211.8C382.7 200.9 382.7 183.1 371.8 172.2C360.9 161.3 343.1 161.3 332.2 172.2L224 280.4L179.8 236.2C168.9 225.3 151.1 225.3 140.2 236.2C129.3 247.1 129.3 264.9 140.2 275.8L204.2 339.8C215.1 350.7 232.9 350.7 243.8 339.8L371.8 211.8z"></path>
+                    </g>
+                </symbol>
+                <symbol id="cart" viewbox="0 0 455.297 455.297" width="100%" height="100%">
+                    <g>
+                        <circle cx="65.993" cy="417.586" r="35"></circle>
+                        <path d="M30.993,322.586v30h182.879c-5.914-9.267-10.676-19.335-14.094-30H30.993z"></path>
+                        <path d="M323.059,183.727c-54.826,0-99.431,44.604-99.431,99.429s44.604,99.429,99.431,99.429
+                            c54.825,0,99.429-44.604,99.429-99.429S377.884,183.727,323.059,183.727z M384.559,298.157h-46.5v46.5h-30v-46.5h-46.5v-30h46.5
+                            v-46.5h30v46.5h46.5V298.157z"></path>
+                        <path d="M393.673,2.711l-12.294,75H0l25.888,158.454c2.833,17.282,19.479,31.422,36.992,31.422h131.688
+                            c7.715-64.052,62.392-113.859,128.49-113.859c26.887,0,51.884,8.244,72.6,22.333l23.496-143.349h36.142v-30H393.673z"></path>
+                        <path d="M323.059,412.586c-12.147,0-23.907-1.686-35.062-4.829c-0.912,3.118-1.404,6.416-1.404,9.829c0,19.33,15.67,35,35,35
+                            c19.33,0,35-15.67,35-35c0-3.145-0.421-6.19-1.2-9.089C345.054,411.166,334.219,412.586,323.059,412.586z"></path>
+                    </g>
+                </symbol>
+            </defs>
+        </svg>
+    </div>    
+</div>                    <div class="definitions d-none">
+                        <svg version="2.0">
+                            <defs>
+                                <symbol id="tick" viewbox="0 0 512 512" width="100%" height="100%">
+                                    <g fill="currentColor">
+                                        <path d="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM371.8 211.8C382.7 200.9 382.7 183.1 371.8 172.2C360.9 161.3 343.1 161.3 332.2 172.2L224 280.4L179.8 236.2C168.9 225.3 151.1 225.3 140.2 236.2C129.3 247.1 129.3 264.9 140.2 275.8L204.2 339.8C215.1 350.7 232.9 350.7 243.8 339.8L371.8 211.8z"></path>
+                                    </g>
+                                </symbol>
+                                <symbol id="cart" viewbox="0 0 455.297 455.297" width="100%" height="100%">
+                                    <g>
+                                        <circle cx="65.993" cy="417.586" r="35"></circle>
+                                        <path d="M30.993,322.586v30h182.879c-5.914-9.267-10.676-19.335-14.094-30H30.993z"></path>
+                                        <path d="M323.059,183.727c-54.826,0-99.431,44.604-99.431,99.429s44.604,99.429,99.431,99.429
+                                            c54.825,0,99.429-44.604,99.429-99.429S377.884,183.727,323.059,183.727z M384.559,298.157h-46.5v46.5h-30v-46.5h-46.5v-30h46.5
+                                            v-46.5h30v46.5h46.5V298.157z"></path>
+                                        <path d="M393.673,2.711l-12.294,75H0l25.888,158.454c2.833,17.282,19.479,31.422,36.992,31.422h131.688
+                                            c7.715-64.052,62.392-113.859,128.49-113.859c26.887,0,51.884,8.244,72.6,22.333l23.496-143.349h36.142v-30H393.673z"></path>
+                                        <path d="M323.059,412.586c-12.147,0-23.907-1.686-35.062-4.829c-0.912,3.118-1.404,6.416-1.404,9.829c0,19.33,15.67,35,35,35
+                                            c19.33,0,35-15.67,35-35c0-3.145-0.421-6.19-1.2-9.089C345.054,411.166,334.219,412.586,323.059,412.586z"></path>
+                                    </g>
+                                </symbol>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+            <!-- <div class="text-center pt-40"><img class="img-fluid" src="/assets/img/paypal-pay-later.jpg" style="border: #041e73 2px solid;" /></div> -->
+        </div>        <section class="py-100">
+            <div></div>
+            <div class="modal fade" role="dialog" tabindex="-1" id="modal-label">
+                <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"></h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body text-center"><img class="img-fluid mx-auto d-none d-lg-block" src="images/img-Label.jpg" title="lbl" loading="lazy"><img class="img-fluid mx-auto recipe-small d-block d-lg-none" src="images/img-sup-facts.jpg" loading="lazy" title="lbl2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="container bg-white position-relative z-2 px-3" style="border-radius: 1rem;">
+                <h1 class="text-center color2 mb-4 has-separator-center font-third fw-bold">Scientific References</h1>
+                <div class="row reference">
+                    <div class="col-md-6 col-lg-6 col-xl-6 d-md-flex d-xl-flex align-items-md-center align-items-xl-center pb-4">
+                        <div class="row d-xxl-flex align-items-xxl-center">
+                            <div class="col d-xl-flex align-items-xl-center"><img class="img-fluid img-fluid mx-auto" src="images/img-dept_med_stacked_2x.png" title="DM" loading="lazy"></div>
+                            <div class="col"><img class="img-fluid img-fluid mx-auto" src="images/img-kisspng-harvard-university-logo-harvard-crimson-football-5b915f071e0344.9092574415362537031229.jpg" title="hvd" loading="lazy"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-6 pb-4">
+                        <div class="row d-xxl-flex align-items-xxl-center">
+                            <div class="col d-xl-flex align-items-xl-center"><img class="img-fluid img-fluid mx-auto" src="images/img-626ba57d1dc4c3b537787e28.png" title="UoS" loading="lazy"></div>
+                            <div class="col d-md-flex d-xl-flex align-items-md-center align-items-xl-center"><img class="img-fluid img-fluid mx-auto" src="images/img-Adelaide-logo-horizontal-2013-e1419344953654.jpg" title="TUA" loading="lazy"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        <ol class="reference_list">
+                            <li>Zou, H., Zhang, X., Chen, W. et al. Vascular endothelium is the basic way for stem cells to treat erectile dysfunction: a bibliometric study. Cell Death Discov. 9, 143 (2023). https://doi.org/10.1038/s41420-023-01443-9</li>
+                            <li> Nunes KP, Labazi H, Webb RC. New insights into hypertension-associated erectile dysfunction. Curr Opin Nephrol Hypertens. 2012 Mar;21(2):163-70. doi: 10.1097/MNH.0b013e32835021bd. PMID: 22240443; PMCID: PMC4004343. </li>
+                            <li> Dell'Agli M, Galli GV, Dal Cero E, Belluti F, Matera R, Zironi E, Pagliuca G, Bosisio E. Potent inhibition of human phosphodiesterase-5 by icariin derivatives. J Nat Prod. 2008 Sep;71(9):1513-7. doi: 10.1021/np800049y. Epub 2008 Sep 9. PMID: 18778098.</li>
+                            <li>Borrelli F, Colalto C, Delfino DV, Iriti M, Izzo AA. Herbal Dietary Supplements for Erectile Dysfunction: A Systematic Review and Meta-Analysis. Drugs. 2018 Apr;78(6):643-673. doi: 10.1007/s40265-018-0897-3. PMID: 29633089.</li>
+                            <li>Cui T, Kovell RC, Brooks DC, Terlecki RP. A Urologist's Guide to Ingredients Found in Top-Selling Nutraceuticals for Men's Sexual Health. J Sex Med. 2015 Nov;12(11):2105-17. doi: 10.1111/jsm.13013. Epub 2015 Nov 3. PMID: 26531010. </li>
+                        </ol>
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        <ol class="reference_list" start="6">
+                            <li>Liu TC, Lin CH, Huang CY, Ivy JL, Kuo CH. Effect of acute DHEA administration on free testosterone in middle-aged and young men following high-intensity interval training. Eur J Appl Physiol. 2013 Jul;113(7):1783-92. doi: 10.1007/s00421-013-2607-x. Epub 2013 Feb 17. PMID: 23417481.</li>
+                            <li>Farag YMK, Guallar E, Zhao D, Kalyani RR, Blaha MJ, Feldman DI, Martin SS, Lutsey PL, Billups KL, Michos ED. Vitamin D deficiency is independently associated with greater prevalence of erectile dysfunction: The National Health and Nutrition Examination Survey (NHANES) 2001-2004. Atherosclerosis. 2016 Sep;252:61-67. doi: 10.1016/j.atherosclerosis.2016.07.921. Epub 2016 Jul 29. PMID: 27505344; PMCID: PMC5035618.</li>
+                            <li>Ng CF, Lee CP, Ho AL, Lee VW. Effect of niacin on erectile function in men suffering erectile dysfunction and dyslipidemia. J Sex Med. 2011 Oct;8(10):2883-93. doi: 10.1111/j.1743-6109.2011.02414.x. Epub 2011 Aug 2. PMID: 21810191. </li>
+                            <li>Yan WJ, Yu N, Yin TL, Zou YJ, Yang J. A new potential risk factor in patients with erectile dysfunction and premature ejaculation: folate deficiency. Asian J Androl. 2014 Nov-Dec;16(6):902-6. doi: 10.4103/1008-682X.135981. PMID: 25080932; PMCID: PMC4236337.</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="text-center pt-5 position-relative label-block"><img class="img-fluid label-img w-35p mx-auto b-radius-8 recipe-big" src="images/img-Label+Bottle.jpg" title="btl-lbl" loading="lazy"><a class="d-block modal-label-trigger" href="#" data-bs-target="#modal-label" data-bs-toggle="modal"><i class="icon-magnifier-add zoom-icon d-block"></i></a></div>
+            </div>
+        </section>
+    </main>
+        <footer class="text-center bg-dark">
+        <div class="container text-white py-4 py-lg-5">
+            <ul class="list-inline small">
+                <li class="list-inline-item"><a class="link-light" href="contact.html" target="_blank">Contact</a></li>
+                <li class="list-inline-item"><a class="link-light" href="references.html" target="_blank">References</a></li>
+                <li class="list-inline-item"><a class="link-light" href="terms.html" target="_blank">Terms</a></li>
+                <li class="list-inline-item"><a class="link-light" href="privacy.html" target="_blank">Privacy</a></li>
+                <li class="list-inline-item"><a class="link-light" href="return-policy.html" target="_blank">Return Policy</a></li>
+                <li class="list-inline-item"><a class="link-light" href="shipping.html" target="_blank">Shipping</a></li>
+                <li class="list-inline-item"><a class="link-light" href="disclamer.html" target="_blank">Disclaimer</a></li>
+                <li class="list-inline-item"><a class="link-light" href="unsubscribe.html" target="_blank">Report Spam</a></li>
+            </ul>
+            <div class="row bg-disclaimer">
+                <div class="col-md-8 col-lg-6 offset-md-2 offset-lg-3 border-bottom border-light mb-2"><a href="#"><img class="img-fluid w-50 bg-logo" src="images/img-buygoods.webp" href="#"></a></div>
+                <div class="col-md-10 offset-md-1">
+                    <p class="fw-light small">&#10013; These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure or prevent any disease. The information provided is not intended to be, nor is, medical advice or a substitute for medical advice. If you have or suspect you have, a specific medical condition or disease, please consult your healthcare provider.</p>
+
+                    <p class="fw-light small">BuyGoods is the retailer of this product. BuyGoods is a registered trademark of BuyGoods, a Delaware corporation located at 1201 N Orange Street Suite #7223, Wilmington, DE, 19801, USA and used by permission. BuyGoods role as retailer does not constitute an endorsement, approval or review of this product or any claim, statement or opinion used in promotion of this product.</p>
+                </div>
+            </div>
+            <div></div>
+            <p class="text-muted mb-0 small">&copy; Hammer of Night Rider 2025 All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+        <script>document.querySelectorAll("[data-disable-user-interaction]").forEach((function (e) { e.classList.add("no-user-interaction"), e.addEventListener("contextmenu", (function (e) { e.preventDefault() })) }))</script>  
+    <script src="js/js-bootstrap.min.js"></script>
+    <script src="js/js-script.min.js"></script>
+    <script>
+    function trackInitiateCheckout(elemClass){
+        url = "qs5ff6g";
+        nid = 2137;
+        init_id = 27;
+        if (typeof evf === 'undefined') {
+            window.evf = {};
+        }
+        evf.url = url;
+        evf.nid = nid;
+        evf.init_id = init_id;
+        evf.checkoutStarted = false;
+
+        evf.urlParam = function (param) {
+            var t = new RegExp("[?&]" + param + "=([^&#]*)").exec(window.location.href);
+            return null === t ? null : t[1] || 0
+        }
+
+        evf.addToCartEvent = function () {
+            if (!evf.checkoutStarted) {
+                evf.checkoutStarted = true;
+                evf.script = document.createElement('iframe');
+                evf.script.width = 1;
+                evf.script.height = 1;
+                evf.script.frameBorder = 0;
+                evf.script.transaction_id = evf.urlParam('subid2');
+                evf.script.src = "https://www." + evf.url + ".com/?nid=" + evf.nid + "&event_id=" + evf.init_id  + "&transaction_id=" + evf.script.transaction_id + "";
+                document.getElementsByTagName('body')[0].appendChild(evf.script);
+
+                console.log('Track InitiateCheckout Event');    
+                if (typeof(runPixels) === 'function'){
+                    runPixels("InitiateCheckout");
+                }         
+            }
+        }
+
+        evf.buttons = document.getElementsByClassName(elemClass);
+        for (var i = 0; i < evf.buttons.length; i++) {
+            evf.buttons[i].addEventListener('click', evf.addToCartEvent, false);
+        }
+    }
+
+</script>    <!-- Everflow Tracking -->
+    <script>trackInitiateCheckout("addToCart");</script>
+    <!-- END Everflow Tracking -->       
+    <!-- Runtime brand text replacement -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function(){
+        try {
+          const map = [
+            ["EndoPeak","Hammer of Night Rider"],
+            ["ENDOPEAK","HAMMER OF NIGHT RIDER"]
+          ];
+          // Title
+          map.forEach(([from,to]) => { if (document.title.includes(from)) document.title = document.title.replaceAll(from,to); });
+          // Text nodes
+          const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+          const nodes = [];
+          let n; while((n = walker.nextNode())) nodes.push(n);
+          nodes.forEach(node => {
+            map.forEach(([from,to]) => { if (node.nodeValue && node.nodeValue.includes(from)) node.nodeValue = node.nodeValue.replaceAll(from,to); });
+          });
+          // Common attributes
+          ["title","alt","aria-label"].forEach(attr => {
+            document.querySelectorAll("*["+attr+"]").forEach(el => {
+              map.forEach(([from,to]) => {
+                const v = el.getAttribute(attr);
+                if (v && v.includes(from)) el.setAttribute(attr, v.replaceAll(from,to));
+              });
+            });
+          });
+        } catch(e) { console.warn('Brand replace error', e); }
+      });
+    </script>
+</body>
+
+</html>

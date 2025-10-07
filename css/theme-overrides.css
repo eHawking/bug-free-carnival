@@ -1,0 +1,110 @@
+/* Hammer of Night Rider theme overrides */
+:root{
+  --brand-primary:#d4af37; /* gold */
+  --brand-primary-dark:#b9972e; /* darker gold */
+  --brand-dark:#0b0b0c; /* near black */
+  --brand-dark-2:#121214;
+  --brand-contrast:#111111;
+  --brand-on-primary:#111111; /* text on gold */
+  --brand-on-dark:#ffffff;
+}
+
+/* Text colors */
+.text-primary{ color: var(--brand-primary) !important; }
+.text-white{ color: #fff !important; }
+
+/* Backgrounds */
+.bg-dark{ background-color: var(--brand-dark) !important; }
+.pattern-bg{ background-color: var(--brand-dark-2) !important; }
+.pattern-bg-light{ background-color: #1a1a1d !important; }
+
+/* Buttons */
+.btn-primary{
+  color: var(--brand-on-primary) !important;
+  background-color: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
+}
+.btn-primary:hover,
+.btn-primary:focus{
+  color: var(--brand-on-primary) !important;
+  background-color: var(--brand-primary-dark) !important;
+  border-color: var(--brand-primary-dark) !important;
+}
+
+/* CTAs and highlights */
+.buy-yellow-btn,
+.yellow-small,
+.cfa-section .cta-btn{
+  background-color: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
+  color: var(--brand-on-primary) !important;
+}
+.cfa-section .cta-btn:hover{
+  background-color: var(--brand-primary-dark) !important;
+  border-color: var(--brand-primary-dark) !important;
+}
+
+/* Headings separators or accents that used previous palette */
+.has-separator-center::after,
+.bottle-top-highlight .cta-vshape{
+  background-color: var(--brand-primary) !important;
+}
+
+/* Price tags and labels */
+.price-ttl,
+.perBottle{ color: #363636 !important; }
+.lto{ color: var(--brand-primary) !important; }
+.lto.lto-dark{ color: #363636 !important; }
+
+/* Links */
+a{ color: var(--brand-primary); }
+a:hover{ color: var(--brand-primary-dark); }
+/* Footer */
+footer.bg-dark{ background-color: var(--brand-dark) !important; color: var(--brand-on-dark) !important; }
+
+/* Misc utilities specific to this page */
+.hero-fixed-bg-od,
+.secondary-cta{
+  background-color: var(--brand-dark) !important;
+}
+
+/* Ensure SVG using currentColor picks up gold when intended */
+.text-primary svg, .text-primary [fill="currentColor"]{ color: var(--brand-primary); fill: currentColor; }
+
+/* Price: big price numbers and per-bottle label to dark gray */
+.price-ttl,
+.newPrice,
+.perBottle{ color: #363636 !important; }
+
+/* Featured panel top color to brand gold */
+.bottleArea.featured .bottleTitle{
+  background-color: var(--brand-primary) !important;
+  background-image: none !important;
+}
+
+/* Fallback: inline styles using old oranges/yellows -> brand gold */
+[style*="#FF4D04"], [style*="#ff4d04"],
+[style*="#FFBC00"], [style*="#ffbc00"],
+[style*="#AC2716"], [style*="#ac2716"]{
+  background-color: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
+  color: var(--brand-primary) !important;
+}
+
+/* Reviews album grid overrides */
+.pa-row-h .album-img{
+  display: block;
+  width: 100%;
+  height: 320px !important;
+  border-radius: 12px !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  margin-bottom: 16px !important;
+  box-shadow: 0 8px 18px rgba(0,0,0,.08);
+}
+@media (min-width: 768px){
+  .pa-row-h .album-img{ height: 360px !important; }
+  .pa-row-h .album-img.small-img{ height: calc(50% - 10px) !important; }
+}
+.pa-row-h .album-img.small-img + .album-img.small-img{ margin-top: 20px; }
