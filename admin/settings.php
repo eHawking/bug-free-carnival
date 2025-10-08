@@ -40,11 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   set_setting('currency_symbol', $symbol);
                   set_setting('currency_rate', (string)(float)$rate);
                   $msg = 'Currency saved';
-                }catch (Throwable $ex){
+                }catch (Exception $ex){
                   $err = 'Failed to save settings: ' . $ex->getMessage();
                 }
             }
-        // Pricing save removed; edit plans in Plans page.
+        }
     }
 }
 ?>

@@ -10,7 +10,7 @@ function ensure_plans_schema(PDO $pdo){
     $cols = [];
     $st = $pdo->query('SHOW COLUMNS FROM plans');
     while($r = $st->fetch(PDO::FETCH_ASSOC)) { $cols[$r['Field']] = true; }
-  } catch (Throwable $e) {
+  } catch (Exception $e) {
     // Table missing: create
     $pdo->exec("CREATE TABLE IF NOT EXISTS plans (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -54,24 +54,38 @@ $err = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!check_csrf($_POST['csrf'] ?? '')) {
-        $err = 'Invalid CSRF token';
     } else {
         // Make sure schema is ready
         ensure_plans_schema($pdo);
         // Update each plan
         $ids = $_POST['id'] ?? [];
-        try{
+        // Pre-validate SKUs: ensure no duplicates in-form and none colliding in DB
+        $seen = [];
+        foreach ($ids as $i => $idTmp) {
+          $skuCheck = trim($_POST['sku'][$i] ?? '');
+          $idCheck = (int)$idTmp;
+          if ($skuCheck === '') { $err = 'SKU cannot be empty (row '.($i+1).')'; break; }
+          if (isset($seen[$skuCheck])) { $err = "Duplicate SKU in form: $skuCheck"; break; }
+          $seen[$skuCheck] = true;
+          // Check DB for another row with same SKU
+          try {
+            $stc = $pdo->prepare('SELECT id FROM plans WHERE sku = ? AND id <> ? LIMIT 1');
+            $stc->execute([$skuCheck, $idCheck]);
+            if ($stc->fetchColumn()) { $err = "SKU '$skuCheck' already exists in database."; break; }
+          } catch (Exception $e) { /* ignore here; will surface later */ }
+        }
+        if ($err) {
+          // Skip save, error will be shown to user via toast
+        } else try{
           $pdo->beginTransaction();
           foreach ($ids as $i => $id) {
-              $id = (int)$id;
-              $sku = trim($_POST['sku'][$i] ?? '');
-              $title = trim($_POST['title'][$i] ?? '');
+            $id = (int)$id;
+            $sku = trim($_POST['sku'][$i] ?? '');
               $subtitle = trim($_POST['subtitle'][$i] ?? '');
               $bottles = max(1, (int)($_POST['bottles'][$i] ?? 1));
               $total_price = (float)($_POST['total_price'][$i] ?? 0);
               $old_total_price = isset($_POST['old_total_price'][$i]) && $_POST['old_total_price'][$i] !== '' ? (float)$_POST['old_total_price'][$i] : null;
               $shipping_text = trim($_POST['shipping_text'][$i] ?? '');
-              $features = trim($_POST['features'][$i] ?? '');
               $image_main = trim($_POST['image_main'][$i] ?? '');
 
               // Handle file upload for this index
@@ -96,10 +110,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           }
           $pdo->commit();
           $msg = 'Plans updated';
-        } catch (Throwable $ex) {
+        } catch (Exception $ex) {
           // Attempt schema fix and report error
-          try { ensure_plans_schema($pdo); } catch(Throwable $e2) {}
-          if ($pdo->inTransaction()) { try{ $pdo->rollBack(); }catch(Throwable $e3){} }
+          try { ensure_plans_schema($pdo); } catch(Exception $e2) {}
+          if ($pdo->inTransaction()) { try{ $pdo->rollBack(); }catch(Exception $e3){} }
           $err = 'Failed to save plans: ' . $ex->getMessage();
         }
     }
@@ -108,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Ensure plans table exists; attempt query and auto-create/seed on failure
 try {
   $rows = $pdo->query('SELECT * FROM plans ORDER BY sort ASC, id ASC')->fetchAll(PDO::FETCH_ASSOC);
-} catch (Throwable $e) {
+} catch (Exception $e) {
   // Create table and seed defaults, then retry
   $pdo->exec("CREATE TABLE IF NOT EXISTS plans (
     id INT AUTO_INCREMENT PRIMARY KEY,

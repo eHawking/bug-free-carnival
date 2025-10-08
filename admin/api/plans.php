@@ -38,7 +38,7 @@ try {
         'currency' => [ 'code' => $code, 'symbol' => $symbol, 'rate' => $rate ],
         'plans' => $plans
     ]);
-} catch (Throwable $e) {
+} catch (Exception $e) {
     http_response_code(500);
     echo json_encode(['ok' => false]);
 }

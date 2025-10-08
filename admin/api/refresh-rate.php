@@ -27,7 +27,7 @@ try {
     if ($rate <= 0) { throw new Exception('invalid rate'); }
     set_setting('currency_rate', (string)$rate);
     echo json_encode(['ok'=>true, 'code'=>$code, 'rate'=>$rate]);
-} catch (Throwable $e) {
+} catch (Exception $e) {
     http_response_code(500);
     echo json_encode(['ok'=>false]);
 }

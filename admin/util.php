@@ -12,7 +12,7 @@ function get_setting($key, $default = null){
         $stmt->execute([$key]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row && array_key_exists('v',$row)) return $row['v'];
-    }catch(Throwable $e){}
+    }catch(Exception $e){}
     return $default;
 }
 
@@ -31,7 +31,7 @@ function get_settings_all(){
         while($r = $stmt->fetch(PDO::FETCH_ASSOC)){
             $out[$r['k']] = $r['v'];
         }
-    }catch(Throwable $e){}
+    }catch(Exception $e){}
     return $out;
-}
+  }
 ?>
