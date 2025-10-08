@@ -82,54 +82,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $t = trim($_POST['price_total_usd_'.$sku] ?? '');
                     $o = trim($_POST['price_old_total_usd_'.$sku] ?? '');
                     if ($t !== '') {
-                        // Save in current currency so pricing follows selected currency
-                        set_setting('price_total_'.$sku, (string)$t);
-                        // Also store USD for reference
                         $usd = (float)$t / $rateNum; // convert back to USD for storage
                         set_setting('price_total_usd_'.$sku, (string)$usd);
                     }
                     if ($o !== '') {
-                        set_setting('price_old_total_'.$sku, (string)$o);
                         $usdOld = (float)$o / $rateNum;
                         set_setting('price_old_total_usd_'.$sku, (string)$usdOld);
                     }
                 }
                 $msg = 'Pricing saved for currency '.e($code);
-            }
-        } elseif ($which === 'images') {
-            // Handle product image uploads; save to existing paths so website reflects updates
-            $map = [
-                'EPK06' => __DIR__ . '/../images/img-PRODx6.png',
-                'EPK03' => __DIR__ . '/../images/img-PRODx3.png',
-                'EPK02' => __DIR__ . '/../images/img-PRODx2.png',
-            ];
-            $allowed = ['image/png','image/jpeg','image/webp'];
-            $limitBytes = 5 * 1024 * 1024; // 5MB
-            $updated = [];
-            foreach ($map as $sku=>$target){
-                $key = 'image_'.$sku;
-                if (!isset($_FILES[$key]) || !is_array($_FILES[$key])) continue;
-                $f = $_FILES[$key];
-                if ($f['error'] === UPLOAD_ERR_NO_FILE) continue;
-                if ($f['error'] !== UPLOAD_ERR_OK) { $err = 'Upload error for '.$sku; break; }
-                if ($f['size'] > $limitBytes) { $err = $sku.' image too large (max 5MB)'; break; }
-                $type = mime_content_type($f['tmp_name']);
-                if ($type && !in_array($type, $allowed, true)) { $err = $sku.' image type not allowed (png/jpg/webp)'; break; }
-                // Ensure directory exists
-                $dir = dirname($target);
-                if (!is_dir($dir)) { @mkdir($dir, 0755, true); }
-                if (!move_uploaded_file($f['tmp_name'], $target)) { $err = 'Failed to save image for '.$sku; break; }
-                @chmod($target, 0644);
-                $updated[] = $sku;
-            }
-            if (!$err) {
-                if ($updated) {
-                    // Optional: bump assets_version to hint caches
-                    set_setting('assets_version', (string)time());
-                    $msg = 'Updated images: '.implode(', ', $updated);
-                } else {
-                    $msg = 'No images uploaded';
-                }
             }
         }
     }
@@ -187,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p style="font-size:12px;color:#6b7280">Example: If base prices are in USD and you want INR display, set code=INR, symbol=₹, and rate ~ 83.00 (update as needed).</p>
         <div style="margin-top:12px">
           <button class="btn btn-primary" type="submit">Save</button>
+          <button class="btn" type="button" id="btnRefreshRate">Refresh rate</button>
         </div>
       </form>
     </div>
@@ -224,5 +186,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </form>
     </div>
   </div>
+  <script>
+    (function(){
+      const btn = document.getElementById('btnRefreshRate');
+      if (!btn) return;
+      btn.addEventListener('click', async function(){
+        btn.disabled = true; btn.textContent = 'Refreshing...';
+        try{
+          const res = await fetch('api/refresh-rate.php', { credentials:'same-origin' });
+          const j = await res.json();
+          if (j && j.ok && typeof j.rate !== 'undefined'){
+            const inp = document.querySelector('input[name="currency_rate"]');
+            if (inp) inp.value = j.rate;
+            alert('Rate updated to '+j.rate+' for '+j.code);
+          } else {
+            alert('Failed to refresh rate');
+          }
+        }catch(e){ alert('Failed to refresh rate'); }
+        finally { btn.disabled = false; btn.textContent = 'Refresh rate'; }
+      });
+    })();
+  </script>
 </body>
 </html>

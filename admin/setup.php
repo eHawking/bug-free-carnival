@@ -77,6 +77,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->prepare('INSERT IGNORE INTO settings (k, v, updated_at) VALUES (?,?,?)')
                 ->execute(['price_old_total_usd_EPK02','358',$now]);
 
+            // Plans table: store pricing card content in selected currency (no USD conversion)
+            $pdo->exec("CREATE TABLE IF NOT EXISTS plans (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                sku VARCHAR(10) NOT NULL UNIQUE,
+                title VARCHAR(190) NOT NULL,
+                subtitle VARCHAR(190) NULL,
+                bottles INT NOT NULL DEFAULT 1,
+                total_price DECIMAL(12,2) NOT NULL DEFAULT 0,
+                old_total_price DECIMAL(12,2) NULL,
+                shipping_text VARCHAR(190) NULL,
+                features TEXT NULL,
+                image_main VARCHAR(255) NULL,
+                sort INT NOT NULL DEFAULT 0,
+                updated_at DATETIME NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+            // Seed initial plans if not existing
+            $seedNow = date('Y-m-d H:i:s');
+            // EPK06
+            $stmt = $pdo->prepare('INSERT IGNORE INTO plans (sku, title, subtitle, bottles, total_price, old_total_price, shipping_text, features, image_main, sort, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)');
+            $stmt->execute(['EPK06','Best Value','180 Days, 6 Bottles',6,294,1074,'FREE US SHIPPING',"YOU SAVE $780!\n2 FREE E-BOOKS!\nBIGGEST DISCOUNT\n60-DAYS GUARANTEE",'/images/img-PRODx6.png',10,$seedNow]);
+            // EPK03
+            $stmt->execute(['EPK03','Most Popular','90 Days, 3 Bottles',3,177,537,'FREE US SHIPPING',"YOU SAVE $360!\n2 FREE E-BOOKS!\n60-DAYS GUARANTEE",'/images/img-PRODx3.png',20,$seedNow]);
+            // EPK02
+            $stmt->execute(['EPK02','Try Two','60 Days, 2 Bottles',2,138,358,'SHIPPING',"YOU SAVE $220!",'/images/img-PRODx2.png',30,$seedNow]);
+
             // Seed admin user if provided and doesn't exist
             if ($adminUser !== '' && $adminPass !== '') {
                 $stmt = $pdo->prepare('SELECT id FROM admin_users WHERE username = ?');

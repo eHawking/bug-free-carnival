@@ -139,28 +139,36 @@
   <script>
     (async function(){
       const $ = (s)=>document.querySelector(s);
-      await (window.__loadCurrency ? window.__loadCurrency() : Promise.resolve());
-      const CUR = window.__currency || { code:'USD', symbol:'$', rate:1 };
-      const fmt = (n)=>{ try{ return (CUR.symbol||'$') + new Intl.NumberFormat(undefined,{minimumFractionDigits:2, maximumFractionDigits:2}).format(+n||0) }catch(e){ return (CUR.symbol||'$')+Number(n||0).toFixed(2);} };
-
       const params = new URLSearchParams(location.search);
       const sku = (params.get('sku')||'').toUpperCase();
-      const priceParam = parseFloat(params.get('price')||'0');
-      const curParam = (params.get('cur')||'').toUpperCase();
-      const productMap = {
-        'EPK06': {name:'Best Value — 6 Bottles', img:'../images/img-PRODx6.png'},
-        'EPK03': {name:'Most Popular — 3 Bottles', img:'../images/img-PRODx3.png'},
-        'EPK02': {name:'Try Two — 2 Bottles',     img:'../images/img-PRODx2.png'}
-      };
-      const prod = productMap[sku] || {name:'Selected Package', img:'../images/img-PRODx3.png'};
+
+      // Load plans and currency (prices already in selected currency)
+      let CUR = { code:'USD', symbol:'$', rate:1 };
+      let plan = null;
+      try {
+        const res = await fetch((location.origin||'') + '/admin/api/plans.php', { credentials: 'same-origin' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.ok) {
+            CUR = data.currency || CUR;
+            const bySku = {};
+            (data.plans||[]).forEach(p => bySku[p.sku] = p);
+            if (sku && bySku[sku]) plan = bySku[sku];
+          }
+        }
+      } catch(e){}
+
+      const fmt = (n)=>{ try{ return (CUR.symbol||'$') + new Intl.NumberFormat(undefined,{minimumFractionDigits:2, maximumFractionDigits:2}).format(+n||0) }catch(e){ return (CUR.symbol||'$')+Number(n||0).toFixed(2);} };
+
+      const urlPrice = parseFloat(params.get('price')||'0');
+      const price = plan && plan.total_price ? Number(plan.total_price) : urlPrice;
+      const name  = plan && plan.title ? (plan.title + (plan.subtitle ? ' — ' + plan.subtitle : '')) : 'Selected Package';
+      const img   = plan && plan.image_main ? (plan.image_main.startsWith('/') ? ('..'+plan.image_main) : plan.image_main) : '../images/img-PRODx3.png';
 
       // Populate summary
-      $('#sumName').textContent = prod.name;
+      $('#sumName').textContent = name;
       $('#sumSku').textContent = sku || '—';
-      var imgSrc = prod.img + (window.__assetsVersion ? ('?v='+window.__assetsVersion) : '');
-      $('#sumImage').src = imgSrc;
-      const isParamInCur = !!curParam && curParam === (CUR.code||'').toUpperCase();
-      const price = isParamInCur ? priceParam : (priceParam * (CUR.rate||1));
+      $('#sumImage').src = img;
       $('#sumPrice').textContent = fmt(price);
       $('#subTotal').textContent = fmt(price);
       $('#grandTotal').textContent = fmt(price);
@@ -173,16 +181,15 @@
         for (const id of required){ const el = document.getElementById(id); if(!el || !el.value.trim()){ el && el.focus(); return; } }
         const order = {
           payment:'COD', sku, price,
-          product: prod,
+          product: { name, img },
           contact:{ email: $('#email').value, phone: $('#phone').value },
           address:{ line1: $('#address').value, city: $('#city').value, zip: $('#zip').value },
           name: ($('#firstName').value||'')+' '+($('#lastName').value||''),
           notes: ($('#notes') && $('#notes').value) || '',
           createdAt: new Date().toISOString()
         };
-        // Attach currency context and preserve base USD
+        // Attach currency context
         order.currency = { code: CUR.code, symbol: CUR.symbol, rate: CUR.rate };
-        order.basePriceUsd = isParamInCur ? (priceParam / (CUR.rate||1)) : priceParam;
         const btn = document.getElementById('placeOrder'); if (btn) btn.disabled = true;
         (async () => {
           try {

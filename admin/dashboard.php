@@ -50,6 +50,7 @@ $latest = $stmt->fetchAll();
       <h1>HONR Admin • Dashboard</h1>
       <div>
         <a class="btn" href="settings.php">Settings</a>
+        <a class="btn" href="plans.php">Plans</a>
         <a class="btn" href="orders.php">Orders</a>
         <a class="btn" href="logout.php">Logout (<?=e($_SESSION['admin_name'] ?? '')?>)</a>
       </div>
