@@ -151,7 +151,8 @@ try {
       </div>
     </header>
 
-    <?php if ($msg): ?><div class="msg"><?=e($msg)?></div><?php endif; ?>
+    <?php if ($msg): ?><div class="msg ok"><?=e($msg)?></div><?php endif; ?>
+    <?php if ($err): ?><div class="msg err"><?=e($err)?></div><?php endif; ?>
 
     <div class="card">
       <form method="post" enctype="multipart/form-data">
