@@ -106,7 +106,8 @@
       let CUR = { code:'USD', symbol:'$', rate:1 };
       let plan = null;
       try {
-        const res = await fetch((location.origin||'') + '/admin/api/plans.php', { credentials: 'same-origin' });
+        const apiUrl = (location.origin||'') + '/admin/api/plans.php?t=' + Date.now();
+        const res = await fetch(apiUrl, { credentials: 'same-origin', cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           if (data && data.ok) {

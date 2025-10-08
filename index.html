@@ -163,9 +163,7 @@
 		ga.initial_referer = document.referrer;
 		ga.entry_domain = window.location.hostname;
 
-				ga.ViewItem("EPK02", 138);
-				ga.ViewItem("EPK06", 294);
-				ga.ViewItem("EPK03", 177);
+				// ViewItem events are fired dynamically from js/pricing.js using DB plan totals
 		
 		ga.buttons = document.getElementsByClassName('addToCart');
 		for(var i = 0; i < ga.buttons.length; i++) {

@@ -15,7 +15,8 @@
 
   async function loadPlans(){
     try{
-      const r = await fetch(API.plans, { credentials: 'same-origin' });
+      const url = API.plans + (API.plans.includes('?') ? '&' : '?') + 't=' + Date.now();
+      const r = await fetch(url, { credentials: 'same-origin', cache: 'no-store' });
       if (!r.ok) throw new Error('HTTP '+r.status);
       const j = await r.json();
       if (!j || !j.ok || !j.plans) throw new Error('bad payload');
@@ -64,6 +65,31 @@
           el.textContent = 'YOU SAVE ' + format(save, cur.symbol).replace(/\.00$/, '') + '!';
         }
       });
+
+      // Title / Subtitle from plan
+      const t = area.querySelector('.bottleTitle h3'); if (t && plan.title) t.textContent = plan.title;
+      const s = area.querySelector('.bottleTitle h5'); if (s && plan.subtitle) s.textContent = plan.subtitle;
+
+      // Main product image
+      const img = area.querySelector('.bottle-img');
+      if (img && plan.image_main){
+        const p = String(plan.image_main||'');
+        img.src = p.startsWith('/') ? p.slice(1) : p; // root-relative to relative
+      }
+
+      // Shipping text (avoid the TOTAL: label)
+      $all('.bottlePrice .shipping', area).forEach(el => {
+        const txt = (el.textContent||'').trim();
+        if (/^TOTAL:?$/i.test(txt)) return;
+        if (plan.shipping_text){ el.textContent = '+ ' + plan.shipping_text; }
+      });
+
+      // Fire GA view item dynamically if available
+      try{
+        if (window.ga && typeof window.ga.ViewItem === 'function'){
+          window.ga.ViewItem(sku, total);
+        }
+      }catch(_){}
     });
   }
 
