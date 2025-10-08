@@ -1,6 +1,7 @@
 (function(){
+  // Signal that pricing is managed entirely by DB to avoid currency.js touching prices
+  try{ window.__pricingDbManaged = true; }catch(_){ }
   const API = { plans: '/admin/api/plans.php' };
-  const SKUS = { EPK06: 6, EPK03: 3, EPK02: 2 };
 
   function $(sel, root){ return (root||document).querySelector(sel); }
   function $all(sel, root){ return Array.from((root||document).querySelectorAll(sel)); }
@@ -30,7 +31,7 @@
       const area = a.closest('.bottleArea') || document;
       const total = Number(plan.total_price||0);
       const old = Number(plan.old_total_price||0);
-      const bottles = Number(plan.bottles||SKUS[sku]||1);
+      const bottles = Number(plan.bottles||1);
 
       // Update Add to Cart href + data-price (selected currency total)
       const newHref = 'checkout/cod.html?sku='+encodeURIComponent(sku)+'&price='+encodeURIComponent(String(total));
@@ -99,8 +100,15 @@
     const cur = data.currency || { code:'USD', symbol:'$', rate:1 };
     const plansBySku = {};
     (data.plans||[]).forEach(p => { plansBySku[p.sku] = p; });
-    Object.keys(SKUS).forEach(sku => {
-      if (plansBySku[sku]) updateCardForSku(sku, plansBySku[sku], cur);
+    // Find all SKUs present on page and update from DB
+    const anchors = Array.from(document.querySelectorAll('a.addToCart[data-sku]'));
+    const seen = new Set();
+    anchors.forEach(a => {
+      const sku = String(a.getAttribute('data-sku')||'').toUpperCase();
+      if (!sku || seen.has(sku)) return; seen.add(sku);
+      const plan = plansBySku[sku];
+      if (plan) updateCardForSku(sku, plan, cur);
     });
+    try{ document.documentElement.classList.add('prices-ready'); }catch(_){ }
   });
 })();

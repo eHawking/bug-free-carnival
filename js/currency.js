@@ -40,6 +40,7 @@
   }
 
   function applyPrices(){
+    if (W.__pricingDbManaged) return; // Pricing managed by DB; do not touch
     const c = W.__currency; if (!c) return;
     const sels = ['.price-ttl', '.newPrice', '.oldPrice'];
     sels.forEach(sel => {
@@ -66,6 +67,7 @@
 
   document.addEventListener('DOMContentLoaded', async function(){
     await load();
+    if (W.__pricingDbManaged) return;
     applyPrices();
   });
 })();

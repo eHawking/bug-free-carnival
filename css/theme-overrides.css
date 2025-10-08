@@ -76,6 +76,13 @@ footer.bg-dark{ background-color: var(--brand-dark) !important; color: var(--bra
 .newPrice,
 .perBottle{ color: #363636 !important; }
 
+/* Prevent USD flash: hide prices until DB pricing script marks ready */
+html:not(.prices-ready) .price-ttl,
+html:not(.prices-ready) .newPrice,
+html:not(.prices-ready) .oldPrice{
+  visibility: hidden;
+}
+
 /* Featured panel top color to brand gold */
 .bottleArea.featured .bottleTitle{
   background-color: var(--brand-primary) !important;
