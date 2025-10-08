@@ -35,10 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($symbol === '') { $symbol = $codes[$code]['symbol']; }
             if (!is_numeric($rate) || (float)$rate <= 0) { $err = 'Rate must be > 0'; }
             if (!$err) {
-                set_setting('currency_code', $code);
-                set_setting('currency_symbol', $symbol);
-                set_setting('currency_rate', (string)(float)$rate);
-                $msg = 'Currency saved';
+                try{
+                  set_setting('currency_code', $code);
+                  set_setting('currency_symbol', $symbol);
+                  set_setting('currency_rate', (string)(float)$rate);
+                  $msg = 'Currency saved';
+                }catch (Throwable $ex){
+                  $err = 'Failed to save settings: ' . $ex->getMessage();
+                }
             }
         // Pricing save removed; edit plans in Plans page.
     }
@@ -94,6 +98,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Pricing section removed. Manage pricing under Plans. -->
   </div>
   <script src="../js/theme-toggle.js"></script>
+  <script src="../js/toast.js"></script>
+  <script>
+    (function(){
+      <?php if ($msg): ?> toast(<?=json_encode($msg)?>, 'ok'); <?php endif; ?>
+      <?php if ($err): ?> toast(<?=json_encode($err)?>, 'err'); <?php endif; ?>
+    })();
+  </script>
   <script>
     (function(){
       const btn = document.getElementById('btnRefreshRate');

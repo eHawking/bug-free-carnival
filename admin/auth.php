@@ -1,6 +1,12 @@
 <?php
 require_once __DIR__ . '/db.php';
 
+function app_base(){
+    if (defined('APP_BASE')) return APP_BASE;
+    // Fallback to root
+    return '/';
+}
+
 function csrf_token() {
     if (empty($_SESSION['csrf'])) {
         $_SESSION['csrf'] = bin2hex(random_bytes(16));
@@ -28,7 +34,7 @@ function login($username, $password) {
 
 function require_login() {
     if (empty($_SESSION['admin_id'])) {
-        header('Location: ' . APP_BASE . 'admin/login.php');
+        header('Location: ' . app_base() . 'admin/login.php');
         exit;
     }
 }

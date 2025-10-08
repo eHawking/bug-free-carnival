@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $u = trim($_POST['username'] ?? '');
         $p = trim($_POST['password'] ?? '');
         if (login($u, $p)) {
-            header('Location: ' . APP_BASE . 'admin/dashboard.php');
+            header('Location: ' . app_base() . 'admin/dashboard.php');
             exit;
         }
         $err = 'Invalid username or password';
@@ -54,5 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
   <script src="../js/theme-toggle.js"></script>
+  <script src="../js/toast.js"></script>
+  <script>
+    (function(){
+      <?php if ($err): ?> toast(<?=json_encode($err)?>, 'err'); <?php endif; ?>
+    })();
+  </script>
 </body>
 </html>

@@ -61,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Update each plan
         $ids = $_POST['id'] ?? [];
         try{
+          $pdo->beginTransaction();
           foreach ($ids as $i => $id) {
               $id = (int)$id;
               $sku = trim($_POST['sku'][$i] ?? '');
@@ -93,11 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               $stmt = $pdo->prepare('UPDATE plans SET sku=?, title=?, subtitle=?, bottles=?, total_price=?, old_total_price=?, shipping_text=?, features=?, image_main=?, updated_at=? WHERE id=?');
               $stmt->execute([$sku, $title, $subtitle, $bottles, $total_price, $old_total_price, $shipping_text, $features, $image_main, date('Y-m-d H:i:s'), $id]);
           }
+          $pdo->commit();
           $msg = 'Plans updated';
         } catch (Throwable $ex) {
           // Attempt schema fix and report error
           try { ensure_plans_schema($pdo); } catch(Throwable $e2) {}
-          $err = 'Failed to save plans. Please reload the page and try again.';
+          if ($pdo->inTransaction()) { try{ $pdo->rollBack(); }catch(Throwable $e3){} }
+          $err = 'Failed to save plans: ' . $ex->getMessage();
         }
     }
 }
@@ -206,5 +209,12 @@ try {
     </div>
   </div>
   <script src="../js/theme-toggle.js"></script>
+  <script src="../js/toast.js"></script>
+  <script>
+    (function(){
+      <?php if ($msg): ?> toast(<?=json_encode($msg)?>, 'ok'); <?php endif; ?>
+      <?php if ($err): ?> toast(<?=json_encode($err)?>, 'err'); <?php endif; ?>
+    })();
+  </script>
 </body>
 </html>

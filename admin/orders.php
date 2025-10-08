@@ -123,5 +123,12 @@ $rows = $stmt->fetchAll();
     </div>
   </div>
   <script src="../js/theme-toggle.js"></script>
+  <script src="../js/toast.js"></script>
+  <script>
+    (function(){
+      <?php if (!empty($msg)): ?> toast(<?=json_encode($msg)?>, 'ok'); <?php endif; ?>
+      <?php if (!empty($err)): ?> toast(<?=json_encode($err)?>, 'err'); <?php endif; ?>
+    })();
+  </script>
 </body>
 </html>
