@@ -5,25 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Thank You - Hammer of Night Rider</title>
   <link rel="stylesheet" href="../css/theme-overrides.css" />
-  <style>
-    body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial; background:#0b0b0c; color:#fff; }
-    .wrap{ max-width:860px; margin:60px auto; padding:24px; text-align:center; }
-    .card{ background:#121214; border:1px solid #1e1e21; border-radius:14px; padding:28px; box-shadow:0 10px 30px rgba(0,0,0,.4); }
-    h1{ margin:0 0 10px; }
-    .muted{ color:#bfbfbf; }
-    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 16px; border-radius:10px; border:1px solid transparent; cursor:pointer; font-weight:700; text-decoration:none; }
-    .btn-primary{ background: var(--brand-primary); color: var(--brand-on-primary); border-color: var(--brand-primary); }
-    .btn-primary:hover{ background: var(--brand-primary-dark); border-color: var(--brand-primary-dark); }
-    .kv{ display:flex; justify-content:center; gap:22px; margin:18px 0; flex-wrap:wrap; }
-    .kv .item{ background:#0f0f12; border:1px solid #1e1e21; padding:12px 16px; border-radius:10px; }
-  </style>
+  <link rel="stylesheet" href="../css/checkout-ui.css" />
 </head>
 <body>
-  <div class="wrap">
+  <div class="ty-wrap">
     <div class="card">
       <h1 class="font-third">Order received 🎉</h1>
       <p class="muted">This is a local demo checkout. No payment was processed.</p>
-      <div id="summary" class="kv" style="display:none">
+      <div id="summary" class="ty-kv" style="display:none">
         <div class="item"><strong>Order</strong>: <span id="orderno">—</span></div>
         <div class="item"><strong>Currency</strong>: <span id="currency">—</span></div>
         <div class="item"><strong>SKU</strong>: <span id="sku">—</span></div>

@@ -40,30 +40,19 @@ $sym = get_setting('currency_symbol', '$');
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HONR Admin • Order <?=e($o['order_number'] ?: ('#'.$o['id']))?></title>
   <link rel="stylesheet" href="../css/theme-overrides.css">
+  <link rel="stylesheet" href="../css/admin-ui.css">
   <style>
-    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial; background:#f6f7f8; color:#111;}
     .wrap{ max-width:980px; margin:24px auto; padding:0 16px; }
-    header{ display:flex; justify-content:space-between; align-items:center; margin:10px 0 16px; }
-    .btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; border:1px solid #e5e7eb; text-decoration:none; color:#111; }
-    .btn-primary{ background: var(--brand-primary); color: var(--brand-on-primary); border-color: var(--brand-primary); }
     .grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    .card{ background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:14px; }
-    .k{ font-size:12px; color:#6b7280; }
-    .v{ font-weight:600; }
-    label{ display:block; font-size:13px; margin:10px 0 6px; }
-    textarea, select{ width:100%; border:1px solid #e5e7eb; border-radius:8px; padding:10px 12px; font-size:14px; }
-    .msg{ margin:10px 0; padding:10px 12px; border-radius:10px; }
-    .ok{ background:#ecfdf5; border:1px solid #10b981; }
-    .err{ background:#fef2f2; border:1px solid #ef4444; }
     table{ width:100%; border-collapse:collapse; }
     td{ padding:6px 8px; vertical-align:top; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
+    <header class="topbar">
       <h1>Order <?=e($o['order_number'] ?: ('#'.$o['id']))?></h1>
-      <div>
+      <div class="nav">
         <a class="btn" href="orders.php">Back to Orders</a>
         <a class="btn" href="settings.php">Settings</a>
         <a class="btn" href="logout.php">Logout (<?=e($_SESSION['admin_name'] ?? '')?>)</a>

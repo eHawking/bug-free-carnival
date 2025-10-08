@@ -27,28 +27,13 @@ $latest = $stmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HONR Admin • Dashboard</title>
   <link rel="stylesheet" href="../css/theme-overrides.css">
-  <style>
-    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial; background:#f6f7f8; color:#111;}
-    .wrap{ max-width:1100px; margin:24px auto; padding:0 16px; }
-    header{ display:flex; justify-content:space-between; align-items:center; margin:10px 0 16px; }
-    .btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; border:1px solid #e5e7eb; text-decoration:none; color:#111; }
-    .btn-primary{ background: var(--brand-primary); color: var(--brand-on-primary); border-color: var(--brand-primary); }
-    .grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap:12px; }
-    .card{ background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:14px; }
-    .k{ font-size:12px; color:#6b7280; }
-    .v{ font-weight:800; font-size:22px; }
-    table{ width:100%; border-collapse:collapse; background:#fff; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden; }
-    th,td{ padding:10px 12px; border-bottom:1px solid #f0f1f2; text-align:left; font-size:14px; }
-    th{ background:#fafafa; }
-    tr:last-child td{ border-bottom:none; }
-    .status{ padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid #e5e7eb; }
-  </style>
+  <link rel="stylesheet" href="../css/admin-ui.css">
 </head>
 <body>
   <div class="wrap">
-    <header>
+    <header class="topbar">
       <h1>HONR Admin • Dashboard</h1>
-      <div>
+      <div class="nav">
         <a class="btn" href="settings.php">Settings</a>
         <a class="btn" href="plans.php">Plans</a>
         <a class="btn" href="orders.php">Orders</a>
@@ -63,8 +48,8 @@ $latest = $stmt->fetchAll();
       <?php endforeach; ?>
     </div>
 
-    <h2 style="margin:18px 0 8px; font-size:16px;">Latest Orders</h2>
-    <table>
+    <h2 class="mt-3" style="font-size:16px;">Latest Orders</h2>
+    <table class="table">
       <thead><tr><th>#</th><th>Date</th><th>Name</th><th>SKU</th><th>Total</th><th>Status</th><th></th></tr></thead>
       <tbody>
         <?php foreach ($latest as $o): ?>

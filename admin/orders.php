@@ -53,6 +53,7 @@ $rows = $stmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HONR Admin • Orders</title>
   <link rel="stylesheet" href="../css/theme-overrides.css">
+  <link rel="stylesheet" href="../css/admin-ui.css">
   <style>
     body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial; background:#f6f7f8; color:#111;}
     .wrap{ max-width:1100px; margin:24px auto; padding:0 16px; }
@@ -71,9 +72,9 @@ $rows = $stmt->fetchAll();
 </head>
 <body>
   <div class="wrap">
-    <header>
+    <header class="topbar">
       <h1>Orders</h1>
-      <div>
+      <div class="nav">
         <a class="btn" href="dashboard.php">Dashboard</a>
         <a class="btn" href="settings.php">Settings</a>
         <a class="btn" href="logout.php">Logout (<?=e($_SESSION['admin_name'] ?? '')?>)</a>
@@ -93,7 +94,7 @@ $rows = $stmt->fetchAll();
 
     <?php if ($msg): ?><div class="msg"><?=e($msg)?></div><?php endif; ?>
 
-    <table style="margin-top:12px;">
+    <table class="table" style="margin-top:12px;">
       <thead><tr><th>#</th><th>Date</th><th>Name</th><th>Email</th><th>Phone</th><th>SKU</th><th>Total</th><th>Status</th><th></th></tr></thead>
       <tbody>
         <?php foreach ($rows as $o): ?>
