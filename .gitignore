@@ -32,3 +32,9 @@ admin/config.php
 # Media
 /images/*
 !/images/.gitkeep
+
+# Favicons
+/favicons/*
+!/favicons/.gitkeep
+/checkout/favicons/*
+!/checkout/favicons/.gitkeep
