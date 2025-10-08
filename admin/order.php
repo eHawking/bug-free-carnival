@@ -53,6 +53,7 @@ $sym = get_setting('currency_symbol', '$');
     <header class="topbar">
       <h1>Order <?=e($o['order_number'] ?: ('#'.$o['id']))?></h1>
       <div class="nav">
+        <button class="btn" id="themeToggle" type="button">Light mode</button>
         <a class="btn" href="orders.php">Back to Orders</a>
         <a class="btn" href="settings.php">Settings</a>
         <a class="btn" href="logout.php">Logout (<?=e($_SESSION['admin_name'] ?? '')?>)</a>
@@ -107,5 +108,6 @@ $sym = get_setting('currency_symbol', '$');
       </div>
     <?php endif; ?>
   </div>
+  <script src="../js/theme-toggle.js"></script>
 </body>
 </html>

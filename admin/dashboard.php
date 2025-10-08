@@ -34,6 +34,7 @@ $latest = $stmt->fetchAll();
     <header class="topbar">
       <h1>HONR Admin • Dashboard</h1>
       <div class="nav">
+        <button class="btn" id="themeToggle" type="button">Light mode</button>
         <a class="btn" href="settings.php">Settings</a>
         <a class="btn" href="plans.php">Plans</a>
         <a class="btn" href="orders.php">Orders</a>
@@ -49,6 +50,7 @@ $latest = $stmt->fetchAll();
     </div>
 
     <h2 class="mt-3" style="font-size:16px;">Latest Orders</h2>
+    <div class="table-wrap">
     <table class="table">
       <thead><tr><th>#</th><th>Date</th><th>Name</th><th>SKU</th><th>Total</th><th>Status</th><th></th></tr></thead>
       <tbody>
@@ -66,6 +68,8 @@ $latest = $stmt->fetchAll();
         <?php if (!$latest): ?><tr><td colspan="7" style="text-align:center;color:#6b7280">No orders yet</td></tr><?php endif; ?>
       </tbody>
     </table>
+    </div>
   </div>
+  <script src="../js/theme-toggle.js"></script>
 </body>
 </html>

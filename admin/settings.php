@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header class="topbar">
       <h1>Settings</h1>
       <div class="nav">
+        <button class="btn" id="themeToggle" type="button">Light mode</button>
         <a class="btn" href="dashboard.php">Dashboard</a>
         <a class="btn" href="plans.php">Plans</a>
         <a class="btn" href="orders.php">Orders</a>
@@ -92,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Pricing section removed. Manage pricing under Plans. -->
   </div>
+  <script src="../js/theme-toggle.js"></script>
   <script>
     (function(){
       const btn = document.getElementById('btnRefreshRate');

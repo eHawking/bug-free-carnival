@@ -10,6 +10,9 @@
 <body>
   <div class="ty-wrap">
     <div class="card">
+      <div style="text-align:right;margin-bottom:8px">
+        <button class="btn" id="themeToggle" type="button">Light mode</button>
+      </div>
       <h1 class="font-third">Order received 🎉</h1>
       <p class="muted">This is a local demo checkout. No payment was processed.</p>
       <div id="summary" class="ty-kv" style="display:none">
@@ -20,29 +23,31 @@
         <div class="item"><strong>Total</strong>: <span id="total">—</span></div>
         <div class="item"><strong>Name</strong>: <span id="name">—</span></div>
         <div class="item"><strong>Email</strong>: <span id="email">—</span></div>
-      </div>
       <div style="margin-top:16px">
         <a class="btn btn-primary" href="../index.html#CTA-to-scoll">Return to Home</a>
       </div>
     </div>
   </div>
+  <script src="../js/theme-toggle.js"></script>
   <script>
     (function(){
       try{
         var raw = sessionStorage.getItem('lastOrder');
         if(!raw){ return; }
         var o = JSON.parse(raw);
-        document.getElementById('summary').style.display='flex';
-        if (o.orderNumber){ document.getElementById('orderno').textContent = o.orderNumber; }
+        var ord = document.getElementById('orderno');
+        if (ord && o.orderNumber){ ord.textContent = o.orderNumber; }
         var code = (o.currency && o.currency.code) || 'USD';
         var sym  = (o.currency && o.currency.symbol) || '$';
-        document.getElementById('currency').textContent = code;
-        document.getElementById('sku').textContent = o.sku||'—';
-        document.getElementById('product').textContent = (o.product&&o.product.name)||'—';
+        var el;
+        el = document.getElementById('currency'); if (el) el.textContent = code;
+        el = document.getElementById('sku'); if (el) el.textContent = o.sku||'—';
+        el = document.getElementById('product'); if (el) el.textContent = (o.product&&o.product.name)||'—';
         var fmt = function(n){ try{ return sym + new Intl.NumberFormat(undefined,{minimumFractionDigits:2, maximumFractionDigits:2}).format(n) }catch(e){ return sym+Number(n||0).toFixed(2);} };
-        document.getElementById('total').textContent = fmt(o.price);
-        document.getElementById('name').textContent = o.name||'—';
-        document.getElementById('email').textContent = o.email||'—';
+        el = document.getElementById('total'); if (el) el.textContent = fmt(o.price);
+        el = document.getElementById('name'); if (el) el.textContent = o.name||'—';
+        el = document.getElementById('email'); if (el) el.textContent = o.email||'—';
+        var summary = document.getElementById('summary'); if (summary) summary.style.display = 'flex';
       }catch(e){}
     })();
   </script>

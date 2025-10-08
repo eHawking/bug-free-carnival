@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="card">
       <div class="topbar">
         <h1 class="m-0">HONR Admin • Login</h1>
+        <div class="nav"><button class="btn" id="themeToggle" type="button">Light mode</button></div>
       </div>
       <div class="inner">
         <?php if ($err): ?><div class="msg err"><?=e($err)?></div><?php endif; ?>
@@ -52,5 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
     </div>
   </div>
+  <script src="../js/theme-toggle.js"></script>
 </body>
 </html>

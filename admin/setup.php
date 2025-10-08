@@ -127,26 +127,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HONR Admin • Setup</title>
   <link rel="stylesheet" href="../css/theme-overrides.css">
+  <link rel="stylesheet" href="../css/admin-ui.css">
   <style>
-    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial; background:#f6f7f8; color:#111;}
-    .wrap{ max-width:720px; margin:40px auto; background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.05); }
-    header{ padding:16px 20px; border-bottom:1px solid #e5e7eb; font-weight:800; }
+    .wrap{ max-width:720px; margin:24px auto; padding:0 16px; }
     .inner{ padding:18px 20px; }
     label{ display:block; font-size:13px; margin:10px 0 6px; }
-    input{ width:100%; border:1px solid #e5e7eb; border-radius:8px; padding:10px 12px; font-size:14px; }
     .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:10px 14px; border-radius:10px; border:1px solid transparent; cursor:pointer; font-weight:800; }
-    .btn-primary{ background: var(--brand-primary); color: var(--brand-on-primary); border-color: var(--brand-primary); }
-    .btn-primary:hover{ background: var(--brand-primary-dark); border-color: var(--brand-primary-dark); }
-    .msg{ padding:10px 12px; border-radius:10px; margin-bottom:10px; }
-    .msg.ok{ background:#ecfdf5; border:1px solid #10b981; }
-    .msg.err{ background:#fef2f2; border:1px solid #ef4444; }
+    @media (max-width: 640px){ .row{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>HONR Admin • Setup</header>
-    <div class="inner">
+    <header class="topbar">
+      <h1 class="m-0">HONR Admin • Setup</h1>
+      <div class="nav"><button class="btn" id="themeToggle" type="button">Light mode</button></div>
+    </header>
+    <div class="card">
+      <div class="inner">
       <?php if ($ok): ?><div class="msg ok"><?=e($ok)?></div><?php endif; ?>
       <?php foreach ($errors as $er): ?><div class="msg err"><?=e($er)?></div><?php endforeach; ?>
 
@@ -168,7 +165,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <button class="btn btn-primary" type="submit">Initialize</button>
         </div>
       </form>
+      </div>
     </div>
   </div>
+  <script src="../js/theme-toggle.js"></script>
 </body>
 </html>

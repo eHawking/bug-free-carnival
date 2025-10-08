@@ -144,6 +144,7 @@ try {
     <header class="topbar">
       <h1>Plans (currency: <?=e($code)?>, symbol: <?=e($symbol)?>)</h1>
       <div class="nav">
+        <button class="btn" id="themeToggle" type="button">Light mode</button>
         <a class="btn" href="settings.php">Settings</a>
         <a class="btn" href="dashboard.php">Dashboard</a>
         <a class="btn" href="logout.php">Logout (<?=e($_SESSION['admin_name'] ?? '')?>)</a>
@@ -155,6 +156,7 @@ try {
     <div class="card">
       <form method="post" enctype="multipart/form-data">
         <input type="hidden" name="csrf" value="<?=e(csrf_token())?>">
+        <div class="table-wrap">
         <table class="table">
           <thead>
             <tr>
@@ -195,11 +197,13 @@ try {
             <?php endforeach; ?>
           </tbody>
         </table>
+        </div>
         <div style="margin-top:12px">
           <button class="btn btn-primary" type="submit">Save Plans</button>
         </div>
       </form>
     </div>
   </div>
+  <script src="../js/theme-toggle.js"></script>
 </body>
 </html>

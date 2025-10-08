@@ -55,19 +55,7 @@ $rows = $stmt->fetchAll();
   <link rel="stylesheet" href="../css/theme-overrides.css">
   <link rel="stylesheet" href="../css/admin-ui.css">
   <style>
-    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial; background:#f6f7f8; color:#111;}
-    .wrap{ max-width:1100px; margin:24px auto; padding:0 16px; }
-    header{ display:flex; justify-content:space-between; align-items:center; margin:10px 0 16px; }
-    .btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; border:1px solid #e5e7eb; text-decoration:none; color:#111; }
-    .btn-primary{ background: var(--brand-primary); color: var(--brand-on-primary); border-color: var(--brand-primary); }
-    .filters{ display:flex; gap:8px; align-items:center; }
-    input, select{ border:1px solid #e5e7eb; border-radius:8px; padding:8px 10px; }
-    table{ width:100%; border-collapse:collapse; background:#fff; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden; }
-    th,td{ padding:10px 12px; border-bottom:1px solid #f0f1f2; text-align:left; font-size:14px; }
-    th{ background:#fafafa; }
-    .status{ padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid #e5e7eb; }
-    .msg{ margin:10px 0; padding:10px 12px; border-radius:10px; background:#ecfdf5; border:1px solid #10b981; }
-    .pagination{ margin-top:12px; display:flex; gap:8px; }
+    /* Page-specific adjustments (minimal) */
   </style>
 </head>
 <body>
@@ -75,6 +63,7 @@ $rows = $stmt->fetchAll();
     <header class="topbar">
       <h1>Orders</h1>
       <div class="nav">
+        <button class="btn" id="themeToggle" type="button">Light mode</button>
         <a class="btn" href="dashboard.php">Dashboard</a>
         <a class="btn" href="settings.php">Settings</a>
         <a class="btn" href="logout.php">Logout (<?=e($_SESSION['admin_name'] ?? '')?>)</a>
@@ -94,7 +83,8 @@ $rows = $stmt->fetchAll();
 
     <?php if ($msg): ?><div class="msg"><?=e($msg)?></div><?php endif; ?>
 
-    <table class="table" style="margin-top:12px;">
+    <div class="table-wrap" style="margin-top:12px;">
+    <table class="table">
       <thead><tr><th>#</th><th>Date</th><th>Name</th><th>Email</th><th>Phone</th><th>SKU</th><th>Total</th><th>Status</th><th></th></tr></thead>
       <tbody>
         <?php foreach ($rows as $o): ?>
@@ -124,6 +114,7 @@ $rows = $stmt->fetchAll();
         <?php if (!$rows): ?><tr><td colspan="9" style="text-align:center;color:#6b7280">No orders</td></tr><?php endif; ?>
       </tbody>
     </table>
+    </div>
 
     <div class="pagination">
       <?php if ($page>1): ?><a class="btn" href="?<?=http_build_query(['status'=>$filter_status,'q'=>$search,'page'=>$page-1])?>">Prev</a><?php endif; ?>
@@ -131,5 +122,6 @@ $rows = $stmt->fetchAll();
       <?php if ($page<$pages): ?><a class="btn" href="?<?=http_build_query(['status'=>$filter_status,'q'=>$search,'page'=>$page+1])?>">Next</a><?php endif; ?>
     </div>
   </div>
+  <script src="../js/theme-toggle.js"></script>
 </body>
 </html>
