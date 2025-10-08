@@ -33,7 +33,7 @@
       const bottles = Number(plan.bottles||SKUS[sku]||1);
 
       // Update Add to Cart href + data-price (selected currency total)
-      const newHref = 'Checkout/cod.html?sku='+encodeURIComponent(sku)+'&price='+encodeURIComponent(String(total));
+      const newHref = 'checkout/cod.html?sku='+encodeURIComponent(sku)+'&price='+encodeURIComponent(String(total));
       a.setAttribute('href', newHref);
       a.setAttribute('data-price', String(total));
 

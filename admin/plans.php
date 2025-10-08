@@ -81,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           foreach ($ids as $i => $id) {
             $id = (int)$id;
             $sku = trim($_POST['sku'][$i] ?? '');
+            $title = trim($_POST['title'][$i] ?? '');
               $subtitle = trim($_POST['subtitle'][$i] ?? '');
               $bottles = max(1, (int)($_POST['bottles'][$i] ?? 1));
               $total_price = (float)($_POST['total_price'][$i] ?? 0);
