@@ -29,7 +29,7 @@
       if (!r.ok) throw new Error('HTTP '+r.status);
       const j = await r.json();
       if (!j || !j.ok || !j.pricing) throw new Error('bad payload');
-      return j.pricing; // { EPK06: {total_usd, old_total_usd, bottles}, ... }
+      return j; // { currency: {code,symbol,rate}, pricing: { EPK06: {total,old_total,bottles} } }
     }catch(e){ return null; }
   }
 
@@ -37,43 +37,49 @@
     // Update every card area that contains this SKU button
     $all('a.addToCart[data-sku="'+sku+'"]').forEach(a => {
       const area = a.closest('.bottleArea') || document;
-      const totalUSD = Number(data.total_usd||0);
-      const oldUSD = Number(data.old_total_usd||0);
+      const totalCur = Number(data.total||0);
+      const oldCur = Number(data.old_total||0);
       const bottles = Number(data.bottles||SKUS[sku]||1);
 
-      // Update Add to Cart href + data-price (base USD)
-      const newHref = 'Checkout/cod.html?sku='+encodeURIComponent(sku)+'&price='+encodeURIComponent(String(totalUSD));
-      a.setAttribute('href', newHref);
-      a.setAttribute('data-price', String(totalUSD));
+      // Bust cache for product image if assets version is provided
+      const img = area.querySelector('img.bottle-img');
+      if (img && window.__assetsVersion){
+        const base = (img.getAttribute('src')||'').split('?')[0];
+        img.setAttribute('src', base + '?v=' + window.__assetsVersion);
+      }
 
-      // Compute converted values
-      const total = totalUSD * (cur.rate||1);
-      const old = oldUSD * (cur.rate||1);
-      const perBottle = (totalUSD / (bottles||1)) * (cur.rate||1);
+      // Update Add to Cart href + data-price (current currency)
+      const newHref = 'Checkout/cod.html?sku='+encodeURIComponent(sku)+'&price='+encodeURIComponent(String(totalCur))+'&cur='+encodeURIComponent(cur.code||'');
+      a.setAttribute('href', newHref);
+      a.setAttribute('data-price', String(totalCur));
+
+      // Values are already in current currency
+      const total = totalCur;
+      const old = oldCur;
+      const perBottle = (totalCur / (bottles||1));
 
       // New total
       $all('.newPrice', area).forEach(el => {
         el.textContent = format(total, cur.symbol);
-        el.setAttribute('data-usd', String(totalUSD));
+        el.setAttribute('data-usd', '');
         el.setAttribute('data-cur', cur.code);
       });
       // Old total
       $all('.oldPrice', area).forEach(el => {
-        if (oldUSD>0){
+        if (oldCur>0){
           el.textContent = '\u00A0'+format(old, cur.symbol)+'\u00A0';
-          el.setAttribute('data-usd', String(oldUSD));
+          el.setAttribute('data-usd', '');
           el.setAttribute('data-cur', cur.code);
         }
       });
       // Per-bottle headline price
       $all('.price-ttl', area).forEach(el => {
         el.textContent = format(perBottle, cur.symbol).replace(/^\s*/, '');
-        el.setAttribute('data-usd', String(totalUSD / (bottles||1)));
+        el.setAttribute('data-usd', '');
         el.setAttribute('data-cur', cur.code);
       });
-      // Savings text (YOU SAVE ...)
-      const saveUSD = (oldUSD>0 && oldUSD>totalUSD) ? (oldUSD - totalUSD) : 0;
-      const save = saveUSD * (cur.rate||1);
+      // Savings text (YOU SAVE ...) using current currency numbers
+      const save = (oldCur>0 && oldCur>totalCur) ? (oldCur - totalCur) : 0;
       $all('.lto.text-primary strong, .lto strong', area).forEach(el => {
         const txt = el.textContent || '';
         if (txt.toUpperCase().includes('YOU SAVE')){
@@ -85,10 +91,14 @@
 
   document.addEventListener('DOMContentLoaded', async function(){
     const cur = await loadCurrency();
-    const pricing = await loadPricing();
-    if (!pricing) return;
+    const payload = await loadPricing();
+    if (!payload) return;
+    const pr = payload.pricing || {};
+    // Prefer API-provided currency for consistency
+    const apiCur = payload.currency || cur;
+    window.__currency = apiCur;
     Object.keys(SKUS).forEach(sku => {
-      if (pricing[sku]) updateCardForSku(sku, pricing[sku], cur);
+      if (pr[sku]) updateCardForSku(sku, pr[sku], apiCur);
     });
   });
 })();

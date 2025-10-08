@@ -145,7 +145,8 @@
 
       const params = new URLSearchParams(location.search);
       const sku = (params.get('sku')||'').toUpperCase();
-      const basePrice = parseFloat(params.get('price')||'0');
+      const priceParam = parseFloat(params.get('price')||'0');
+      const curParam = (params.get('cur')||'').toUpperCase();
       const productMap = {
         'EPK06': {name:'Best Value — 6 Bottles', img:'../images/img-PRODx6.png'},
         'EPK03': {name:'Most Popular — 3 Bottles', img:'../images/img-PRODx3.png'},
@@ -156,8 +157,10 @@
       // Populate summary
       $('#sumName').textContent = prod.name;
       $('#sumSku').textContent = sku || '—';
-      $('#sumImage').src = prod.img;
-      const price = basePrice * (CUR.rate||1);
+      var imgSrc = prod.img + (window.__assetsVersion ? ('?v='+window.__assetsVersion) : '');
+      $('#sumImage').src = imgSrc;
+      const isParamInCur = !!curParam && curParam === (CUR.code||'').toUpperCase();
+      const price = isParamInCur ? priceParam : (priceParam * (CUR.rate||1));
       $('#sumPrice').textContent = fmt(price);
       $('#subTotal').textContent = fmt(price);
       $('#grandTotal').textContent = fmt(price);
@@ -179,7 +182,7 @@
         };
         // Attach currency context and preserve base USD
         order.currency = { code: CUR.code, symbol: CUR.symbol, rate: CUR.rate };
-        order.basePriceUsd = basePrice;
+        order.basePriceUsd = isParamInCur ? (priceParam / (CUR.rate||1)) : priceParam;
         const btn = document.getElementById('placeOrder'); if (btn) btn.disabled = true;
         (async () => {
           try {

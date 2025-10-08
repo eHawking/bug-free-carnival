@@ -29,6 +29,8 @@
         if (!c || !c.code) c.code = 'USD';
         if (!c.symbol) c.symbol = '$';
         if (!c.rate || c.rate <= 0) c.rate = 1;
+        // expose assets version for image cache busting
+        if (j && j.assets_version) { W.__assetsVersion = j.assets_version; }
         W.__currency = c;
         return c;
       })
